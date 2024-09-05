@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from "mongoose";
 const postSchema = mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
