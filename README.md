@@ -1,217 +1,119 @@
-# 🌆 Skyline - Social Media Application
+# ✨ Skyline ✨
 
-A modern, full-stack social media platform built with React and Node.js featuring a premium glassmorphism UI design.
+### *your feed, your vibe* 🌆
 
-![Skyline Banner](https://img.shields.io/badge/Skyline-Social%20Media-8b5cf6?style=for-the-badge&logo=react&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+[![Live Demo](https://img.shields.io/badge/🔥_CHECK_IT_LIVE-8b5cf6?style=for-the-badge)](https://social-media-application-xgbd-mvbv71fu.vercel.app)
+[![GitHub](https://img.shields.io/badge/⭐_STAR_THIS-000?style=for-the-badge&logo=github)](https://github.com/Prajjawalsingh87/Social-media-application)
 
 ---
 
-## 🚀 Live Demo
+## 🎯 what is skyline?
 
-| Platform | URL |
-|----------|-----|
-| **Frontend** | [https://social-media-application-xgbd-mvbv71fu.vercel.app](https://social-media-application-xgbd-mvbv71fu.vercel.app) |
-| **Backend API** | [https://social-media-application-eta.vercel.app](https://social-media-application-eta.vercel.app) |
+skyline is a **next-gen social media app** where you share your moments, connect with your people, and vibe with content that matters 💜
 
----
-
-## ✨ Features
-
-### Core Features
-- 🔐 **Authentication** - Secure JWT-based login & signup with refresh tokens
-- 📝 **Posts** - Create, view, and interact with image posts
-- ❤️ **Likes** - Like/unlike posts with animated heart effects
-- 👥 **Follow System** - Follow/unfollow users to customize your feed
-- 👤 **Profiles** - View user profiles with stats and post grids
-- 🔍 **Search** - Find users across the platform
-
-### UI Features
-- 🌈 **Premium Glassmorphism Design** - Modern translucent card effects
-- ✨ **Animated Backgrounds** - Floating gradient orbs
-- 💫 **Smooth Animations** - Staggered slide-up effects on posts
-- 💖 **Heart Beat Animation** - Satisfying like interactions
-- 📱 **Fully Responsive** - Works on all device sizes
-- 🌙 **Dark Theme** - Easy on the eyes
+think instagram meets twitter, but with that **clean dark mode aesthetic** everyone loves 🌙
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 try it now
 
-### Frontend
-- **React 18** - UI Library
-- **Redux Toolkit** - State Management
-- **React Router** - Navigation
-- **Axios** - API Requests
-- **SCSS** - Styling
-- **React Toastify** - Notifications
-- **React Icons** - Icon Library
-
-### Backend
-- **Node.js** - Runtime
-- **Express.js** - Web Framework
-- **MongoDB** - Database
-- **Mongoose** - ODM
-- **JWT** - Authentication
-- **Cloudinary** - Image Storage
-- **Bcrypt** - Password Hashing
-
-### Deployment
-- **Vercel** - Frontend & Backend Hosting
-- **MongoDB Atlas** - Cloud Database
+| | |
+|---|---|
+| 📱 **app** | [**skyline.vercel.app**](https://social-media-application-xgbd-mvbv71fu.vercel.app) |
+| 🔌 **api** | [social-media-application-eta.vercel.app](https://social-media-application-eta.vercel.app) |
 
 ---
 
-## 📦 Installation
+## ⚡ features that slap
 
-### Prerequisites
-- Node.js 18+
-- MongoDB Atlas Account
-- Cloudinary Account
+| | |
+|---|---|
+| � | **post your pics** - share moments with captions |
+| ❤️ | **double tap to like** - with satisfying heart animation |
+| 👥 | **follow the gang** - build your feed, your way |
+| � | **find your people** - search for anyone |
+| 👤 | **flex your profile** - show off your grid |
+| � | **secure login** - your data stays safe fr fr |
 
-### Clone Repository
-```bash
-git clone https://github.com/Prajjawalsingh87/Social-media-application.git
-cd Social-media-application
+---
+
+## 🎨 the aesthetic
+
+```
+✦ glassmorphism cards
+✦ purple & pink gradient vibes  
+✦ floating orb animations
+✦ dark mode (only option, we don't do basic)
+✦ smooth transitions everywhere
 ```
 
-### Backend Setup
+---
+
+## 🛠️ built with
+
+**frontend**
+```
+react ⚛️ + redux 🔄 + scss 💅
+```
+
+**backend**
+```
+node.js 💚 + express 🚂 + mongodb 🍃
+```
+
+**deployment**
+```
+vercel ▲ + cloudinary ☁️
+```
+
+---
+
+## � run it yourself
+
 ```bash
+# clone it
+git clone https://github.com/Prajjawalsingh87/Social-media-application.git
+
+# backend
 cd Social-Media-Application/server
 npm install
-```
-
-Create a `.env` file:
-```env
-MONGODB_URI=your_mongodb_connection_string
-ACCESS_TOKEN_PRIVATE_KEY=your_access_token_secret
-REFRESH_TOKEN_PRIVATE_KEY=your_refresh_token_secret
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-```
-
-Start the server:
-```bash
 npm start
-```
 
-### Frontend Setup
-```bash
+# frontend (new terminal)
 cd Social-Media-Application/client
 npm install
-```
-
-Create a `.env` file (optional for local development):
-```env
-REACT_APP_SERVER_BASE_URL=http://localhost:4001
-```
-
-Start the client:
-```bash
 npm start
 ```
 
----
-
-## 🔗 API Endpoints
-
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/auth/signup` | Register new user |
-| POST | `/auth/login` | Login user |
-| GET | `/auth/refresh` | Refresh access token |
-| GET | `/auth/logout` | Logout user |
-
-### Users
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/user/getMyInfo` | Get current user info |
-| GET | `/user/getUserProfile/:id` | Get user profile |
-| PUT | `/user/update` | Update profile |
-| POST | `/user/follow` | Follow a user |
-| POST | `/user/unfollow` | Unfollow a user |
-| GET | `/user/getFeedData` | Get personalized feed |
-
-### Posts
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/posts/` | Create a new post |
-| POST | `/posts/like` | Like/unlike a post |
+> 💡 don't forget to add your `.env` files with mongodb, cloudinary, and jwt keys!
 
 ---
 
-## 🎨 UI Color Palette
-
-| Color | Hex | Usage |
-|-------|-----|-------|
-| Background | `#0a0a0f` | Primary background |
-| Card | `rgba(18, 18, 26, 0.85)` | Glass cards |
-| Accent Primary | `#8b5cf6` | Purple accent |
-| Accent Secondary | `#ec4899` | Pink accent |
-| Success | `#10b981` | Success states |
-| Error | `#f43f5e` | Error states |
-
----
-
-## 📁 Project Structure
+## � api endpoints
 
 ```
-Social-Media-Application/
-├── client/                 # React Frontend
-│   ├── src/
-│   │   ├── components/     # Reusable components
-│   │   ├── pages/          # Page components
-│   │   ├── redux/          # State management
-│   │   ├── utils/          # Utilities
-│   │   └── index.css       # Global styles
-│   └── package.json
-│
-├── server/                 # Node.js Backend
-│   ├── controllers/        # Route controllers
-│   ├── models/             # Mongoose models
-│   ├── routers/            # Express routes
-│   ├── utils/              # Utilities
-│   ├── index.js            # Entry point
-│   └── vercel.json         # Vercel config
-│
-└── README.md
+POST /auth/signup     → create account
+POST /auth/login      → get in
+GET  /user/getMyInfo  → who am i
+POST /posts/          → drop a post
+POST /posts/like      → show love
+POST /user/follow     → connect
 ```
 
 ---
 
-## 🚀 Deployment
+## 🤝 connect
 
-This project is configured for easy deployment on Vercel:
+made by **prajjawal** 💜
 
-1. **Backend**: Deploy from `Social-Media-Application/server` with Framework Preset: "Other"
-2. **Frontend**: Deploy from `Social-Media-Application/client` with Framework Preset: "Create React App"
-
-Remember to set environment variables in Vercel dashboard!
-
----
-
-## 👨‍💻 Author
-
-**Prajjawal Singh**
-
-- GitHub: [@Prajjawalsingh87](https://github.com/Prajjawalsingh87)
-
----
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
+[![GitHub](https://img.shields.io/badge/@Prajjawalsingh87-000?style=flat-square&logo=github)](https://github.com/Prajjawalsingh87)
 
 ---
 
 <div align="center">
 
-### ⭐ Star this repo if you like it!
+### if you like it, star it ⭐
 
-Made with 💜 by Prajjawal Singh
+*no cap, it helps a lot* 🙏
 
 </div>
