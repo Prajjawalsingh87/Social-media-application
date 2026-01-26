@@ -28,15 +28,7 @@ app.use(cookieParser());
 app.use(
     cors({
         credentials: true,
-        origin: (origin, callback) => {
-            // Check if origin is allowed (you can add a whitelist here if needed)
-            // For now, mirroring the origin is the most permissive way that works with Credentials
-            if (!origin) {
-                // Determine origin based on environment for server-to-server calls
-                return callback(null, true);
-            }
-            return callback(null, origin);
-        }
+        origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000'
     })
 );
 
