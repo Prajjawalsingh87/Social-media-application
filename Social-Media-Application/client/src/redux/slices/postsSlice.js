@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosClient } from "../../utils/axiosClient";
-import { setLoading } from "./appConfigSlice";
 
 export const getUserProfile = createAsyncThunk(
     "user/getUserProfile",
@@ -25,7 +24,7 @@ export const likeAndUnlikePost = createAsyncThunk(
             return response.result.post;
         } catch (error) {
             return Promise.reject(error);
-        } 
+        }
     }
 );
 
@@ -46,7 +45,7 @@ const postsSlice = createSlice({
                     (item) => item._id === post._id
                 );
                 console.log("postslice", index);
-                if (index != undefined && index != -1) {
+                if (index !== undefined && index !== -1) {
                     state.userProfile.posts[index] = post;
                 }
             });

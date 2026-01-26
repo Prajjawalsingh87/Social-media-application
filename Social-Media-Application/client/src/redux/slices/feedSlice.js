@@ -11,7 +11,7 @@ export const getFeedData = createAsyncThunk(
             return response.result;
         } catch (error) {
             return Promise.reject(error);
-        } 
+        }
     }
 );
 
@@ -23,7 +23,7 @@ export const followAndUnfollowUser = createAsyncThunk(
             return response.result.user;
         } catch (error) {
             return Promise.reject(error);
-        } 
+        }
     }
 );
 
@@ -44,14 +44,14 @@ const feedSlice = createSlice({
                     (item) => item._id === post._id
                 );
                 console.log("feed like", post, index);
-                if (index != undefined && index != -1) {
+                if (index !== undefined && index !== -1) {
                     state.feedData.posts[index] = post;
                 }
             })
             .addCase(followAndUnfollowUser.fulfilled, (state, action) => {
                 const user = action.payload;
-                const index = state?.feedData?.followings.findIndex(item => item._id == user._id);
-                if(index != -1) {
+                const index = state?.feedData?.followings.findIndex(item => item._id === user._id);
+                if (index !== -1) {
                     state?.feedData.followings.splice(index, 1);
                 } else {
                     state?.feedData.followings.push(user);

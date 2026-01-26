@@ -3,7 +3,7 @@ import "./UpdateProfile.scss";
 import "./UpdateProfile.scss";
 import dummyUserImg from '../../assets/user.png'
 import { useSelector, useDispatch } from "react-redux";
-import { setLoading, updateMyProfile } from "../../redux/slices/appConfigSlice";
+import { updateMyProfile } from "../../redux/slices/appConfigSlice";
 
 function UpdateProfile() {
     const myProfile = useSelector((state) => state.appConfigReducer.myProfile);
@@ -23,7 +23,7 @@ function UpdateProfile() {
         const fileReader = new FileReader();
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
-            if(fileReader.readyState === fileReader.DONE) {
+            if (fileReader.readyState === fileReader.DONE) {
                 setUserImg(fileReader.result)
                 console.log('img data', fileReader.result);
             }
@@ -70,7 +70,7 @@ function UpdateProfile() {
                             placeholder="Your Bio"
                             onChange={(e) => setBio(e.target.value)}
                         />
-                        <input type="submit" className="btn-primary" onClick={handleSubmit}/>
+                        <input type="submit" className="btn-primary" onClick={handleSubmit} />
                     </form>
 
                     <button className="delete-account btn-primary">
