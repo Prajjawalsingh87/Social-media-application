@@ -1,59 +1,61 @@
 .CreatePost {
     display: flex;
-    background: var(--card-bg);
+    background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
-    border: var(--glass-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
     padding: 24px;
-    gap: 20px;
-    margin-top: 20px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-md);
+    gap: 16px;
+    margin-bottom: 24px;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-sm);
 
-    &:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-        border-color: rgba(99, 102, 241, 0.3);
+    &:focus-within {
+        border-color: rgba(139, 92, 246, 0.4);
+        box-shadow: var(--shadow-md), 0 0 30px rgba(139, 92, 246, 0.1);
     }
 
     .left-part {
-        flex-grow: 0;
         flex-shrink: 0;
     }
 
     .right-part {
-        flex-grow: 1;
+        flex: 1;
         display: flex;
         flex-direction: column;
         gap: 16px;
 
         .captionInput {
             width: 100%;
-            padding: 14px 20px;
+            padding: 16px 20px;
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--radius-lg);
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-family: inherit;
             outline: none;
-            transition: all 0.3s ease;
+            resize: none;
+            min-height: 60px;
+            transition: var(--transition-normal);
 
             &::placeholder {
-                color: var(--text-secondary);
+                color: var(--text-muted);
             }
 
             &:focus {
-                background: rgba(255, 255, 255, 0.08);
-                border-color: var(--accent-color);
-                box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+                border-color: var(--accent-primary);
+                background: rgba(139, 92, 246, 0.05);
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
             }
         }
 
         .img-container {
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--glass-border);
+            position: relative;
 
             .post-img {
                 width: 100%;
@@ -61,32 +63,83 @@
                 object-fit: cover;
                 max-height: 400px;
             }
+
+            .remove-img {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                width: 36px;
+                height: 36px;
+                background: rgba(0, 0, 0, 0.7);
+                border: none;
+                border-radius: 50%;
+                color: white;
+                font-size: 1.2rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition-fast);
+
+                &:hover {
+                    background: var(--error);
+                    transform: scale(1.1);
+                }
+            }
         }
 
         .bottom-part {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-top: 8px;
+
+            .actions {
+                display: flex;
+                gap: 8px;
+            }
+
+            .action-btn {
+                width: 44px;
+                height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(139, 92, 246, 0.1);
+                border: none;
+                border-radius: 50%;
+                color: var(--accent-primary);
+                font-size: 1.2rem;
+                cursor: pointer;
+                transition: var(--transition-normal);
+
+                &:hover {
+                    background: var(--accent-primary);
+                    color: white;
+                    transform: scale(1.1);
+                    box-shadow: 0 0 20px var(--accent-glow);
+                }
+            }
 
             .input-post-img {
                 .labelImg {
+                    width: 44px;
+                    height: 44px;
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    width: 44px;
-                    height: 44px;
                     border-radius: 50%;
-                    background: rgba(99, 102, 241, 0.1);
-                    color: var(--accent-color);
+                    background: rgba(139, 92, 246, 0.1);
+                    color: var(--accent-primary);
                     font-size: 1.2rem;
                     cursor: pointer;
-                    transition: all 0.3s ease;
+                    transition: var(--transition-normal);
 
                     &:hover {
-                        background: var(--accent-color);
+                        background: var(--accent-primary);
                         color: white;
                         transform: scale(1.1);
-                        box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+                        box-shadow: 0 0 20px var(--accent-glow);
                     }
                 }
 
@@ -96,10 +149,30 @@
             }
 
             .post-btn {
-                padding: 10px 24px;
-                font-size: 0.95rem;
-                min-width: 100px;
+                padding: 12px 32px;
+                font-size: 1rem;
+                min-width: 120px;
             }
         }
+    }
+}
+
+/* Post Success Animation */
+.post-success {
+    animation: successPulse 0.5s ease-out;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+        border-color: var(--success);
+    }
+
+    100% {
+        transform: scale(1);
     }
 }

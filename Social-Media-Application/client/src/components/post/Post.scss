@@ -1,104 +1,239 @@
 .Post {
-    background: var(--card-bg);
+    background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    margin-bottom: 30px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 24px;
     overflow: hidden;
-    transition: all 0.3s ease;
-    animation: slideUp 0.6s ease-out;
+    transition: var(--transition-normal);
+    animation: slideUp 0.5s ease-out;
+    animation-fill-mode: both;
+
+    &:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    &:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    &:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    &:nth-child(4) {
+        animation-delay: 0.3s;
+    }
 
     &:hover {
         transform: translateY(-4px);
+        border-color: rgba(139, 92, 246, 0.3);
         box-shadow: var(--shadow-lg);
-        border-color: rgba(99, 102, 241, 0.3);
     }
 
     .heading {
         padding: 16px 20px;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
         cursor: pointer;
-        transition: background 0.3s ease;
+        transition: var(--transition-fast);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 
         &:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
         h4 {
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: var(--transition-fast);
+
+            &:hover {
+                color: var(--accent-primary);
+            }
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
     }
 
     .content {
         width: 100%;
-        background: #000;
+        background: var(--bg-primary);
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 300px;
+        max-height: 600px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
 
         img {
-            max-width: 100%;
-            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             transition: transform 0.5s ease;
         }
 
         &:hover img {
             transform: scale(1.02);
         }
+
+        /* Double-tap heart animation overlay */
+        .heart-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: var(--error);
+            font-size: 100px;
+            opacity: 0;
+            pointer-events: none;
+            filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.8));
+        }
+
+        .heart-overlay.show {
+            animation: heartPop 0.8s ease-out forwards;
+        }
     }
 
     .footer {
         padding: 20px;
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
 
         .like {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            width: fit-content;
-            margin-bottom: 12px;
+            user-select: none;
 
             .icon {
                 font-size: 1.8rem;
-                transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                transition: var(--transition-fast);
+                color: var(--text-secondary);
+
+                &.liked {
+                    color: var(--error);
+                    animation: heartBeat 0.6s ease-in-out;
+                }
 
                 &:hover {
-                    transform: scale(1.2);
+                    transform: scale(1.15);
+                }
+
+                &:active {
+                    transform: scale(0.9);
                 }
             }
 
             h4 {
-                font-size: 0.9rem;
-                font-weight: 500;
+                font-size: 0.95rem;
+                font-weight: 600;
                 color: var(--text-primary);
+            }
+        }
+
+        .comment-icon,
+        .share-icon {
+            font-size: 1.6rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+
+            &:hover {
+                color: var(--accent-primary);
+                transform: scale(1.1);
             }
         }
 
         .caption {
             font-size: 1rem;
             color: var(--text-primary);
+            line-height: 1.6;
             margin-bottom: 8px;
-            line-height: 1.5;
+
+            .username {
+                font-weight: 700;
+                margin-right: 8px;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--accent-primary);
+                }
+            }
         }
 
         .time-ago {
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
     }
 }
 
+@keyframes heartPop {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}
+
+@keyframes heartBeat {
+    0% {
+        transform: scale(1);
+    }
+
+    15% {
+        transform: scale(1.3);
+    }
+
+    30% {
+        transform: scale(1);
+    }
+
+    45% {
+        transform: scale(1.2);
+    }
+
+    60% {
+        transform: scale(1);
+    }
+}
+
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(40px);
     }
 
     to {

@@ -1,25 +1,24 @@
 .Navbar {
-    width: 92%;
+    width: 94%;
     max-width: 1400px;
-    margin: 20px auto;
+    margin: 16px auto;
     position: sticky;
-    top: 20px;
-    height: 75px;
+    top: 16px;
+    height: 72px;
     z-index: 1000;
-    border-radius: var(--radius-lg);
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
-    border: var(--glass-border);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4), var(--shadow-glow);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition-normal);
 
     &:hover {
-        border-color: rgba(99, 102, 241, 0.3);
-        transform: translateY(-2px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.2);
+        border-color: rgba(139, 92, 246, 0.3);
+        box-shadow: var(--shadow-lg), 0 0 30px rgba(139, 92, 246, 0.1);
     }
 
     .container {
@@ -27,70 +26,75 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 40px;
+        padding: 0 32px;
+    }
+
+    .left-side {
+        flex-shrink: 0;
     }
 
     .banner {
         font-family: 'Outfit', sans-serif;
         font-weight: 900;
-        font-size: 2rem;
-        background: linear-gradient(90deg,
-                var(--accent-color) 0%,
-                var(--secondary-accent) 50%,
-                var(--accent-hover) 100%);
+        font-size: 1.75rem;
+        background: var(--accent-gradient);
         background-size: 200% auto;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        letter-spacing: -1.5px;
-        animation: shine 3s linear infinite;
+        letter-spacing: -1px;
         cursor: pointer;
+        transition: var(--transition-normal);
+        animation: shimmerText 3s ease-in-out infinite;
+
+        &:hover {
+            transform: scale(1.05);
+        }
     }
 
     .center-side {
         flex: 1;
-        max-width: 500px;
-        margin-inline: 50px;
+        max-width: 480px;
+        margin-inline: 40px;
 
         .search-bar {
             width: 100%;
             display: flex;
             align-items: center;
-            padding: 10px 20px;
-            gap: 15px;
-            border-radius: var(--radius-md);
-            background: rgba(255, 255, 255, 0.04);
+            padding: 12px 20px;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid transparent;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: var(--radius-full);
+            transition: var(--transition-normal);
 
             &:focus-within {
-                background: rgba(255, 255, 255, 0.07);
-                border-color: var(--accent-color);
-                box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
-                transform: scale(1.02);
+                background: rgba(255, 255, 255, 0.06);
+                border-color: var(--accent-primary);
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
             }
 
             .icon {
-                font-size: 1.3rem;
-                color: var(--text-secondary);
-                transition: color 0.3s ease;
+                font-size: 1.25rem;
+                color: var(--text-muted);
+                transition: var(--transition-fast);
             }
 
             &:focus-within .icon {
-                color: var(--accent-color);
+                color: var(--accent-primary);
             }
 
             input {
+                flex: 1;
                 background: none;
                 border: none;
                 color: var(--text-primary);
-                width: 100%;
-                outline: none;
                 font-size: 0.95rem;
                 font-family: inherit;
+                outline: none;
 
                 &::placeholder {
-                    color: rgba(255, 255, 255, 0.3);
+                    color: var(--text-muted);
                 }
             }
         }
@@ -98,68 +102,97 @@
 
     .right-side {
         display: flex;
-        gap: 30px;
         align-items: center;
+        gap: 24px;
 
         .nav-icons {
             display: flex;
-            gap: 25px;
-            border-right: 1px solid var(--border-color);
-            padding-right: 25px;
+            align-items: center;
+            gap: 20px;
+            padding-right: 24px;
+            border-right: 1px solid var(--glass-border);
 
             .nav-icon {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
                 color: var(--text-secondary);
                 cursor: pointer;
-                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                transition: var(--transition-normal);
+                position: relative;
 
                 &:hover {
-                    color: var(--text-primary);
+                    color: var(--accent-primary);
                     transform: translateY(-3px) scale(1.1);
-                    filter: drop-shadow(0 0 8px var(--glow-accent));
+                    filter: drop-shadow(0 0 10px var(--accent-glow));
                 }
 
                 &.active {
-                    color: var(--accent-color);
+                    color: var(--accent-primary);
+                }
+
+                .notification-badge {
+                    position: absolute;
+                    top: -4px;
+                    right: -4px;
+                    min-width: 18px;
+                    height: 18px;
+                    background: var(--error);
+                    border-radius: var(--radius-full);
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    border: 2px solid var(--bg-primary);
+                    animation: pulse 2s infinite;
                 }
             }
         }
 
         .profile {
             cursor: pointer;
+            position: relative;
             border: 2px solid transparent;
             border-radius: 50%;
-            padding: 2px;
-            transition: all 0.4s ease;
+            padding: 3px;
+            transition: var(--transition-normal);
 
             &:hover {
-                border-color: var(--accent-color);
-                transform: scale(1.05);
-                box-shadow: 0 0 20px var(--glow-accent);
+                border-color: var(--accent-primary);
+                transform: scale(1.08);
+                box-shadow: 0 0 25px var(--accent-glow);
             }
         }
 
         .logout {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             display: flex;
             justify-content: center;
             align-items: center;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: var(--radius-md);
+            transition: var(--transition-normal);
 
             &:hover {
-                color: #f43f5e;
+                color: var(--error);
+                background: rgba(244, 63, 94, 0.1);
                 transform: rotate(8deg) scale(1.1);
-                filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.4));
             }
         }
     }
 }
 
-@keyframes shine {
-    to {
-        background-position: 200% center;
+@keyframes shimmerText {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
     }
 }
 
@@ -171,22 +204,30 @@
         border-radius: 0;
         border-left: none;
         border-right: none;
-        height: 70px;
+        height: 64px;
 
         .container {
-            padding: 0 20px;
+            padding: 0 16px;
         }
 
         .center-side {
             display: none;
         }
 
+        .banner {
+            font-size: 1.5rem;
+        }
+
         .right-side {
-            gap: 15px;
+            gap: 16px;
 
             .nav-icons {
-                gap: 15px;
-                padding-right: 15px;
+                gap: 14px;
+                padding-right: 16px;
+
+                .nav-icon {
+                    font-size: 1.4rem;
+                }
             }
         }
     }
