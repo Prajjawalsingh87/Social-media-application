@@ -25,20 +25,13 @@ const app = express();
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("common"));
 app.use(cookieParser());
+// CORS: Allow any origin by reflecting it back (required for credentials)
 app.use(
     cors({
         credentials: true,
         origin: (origin, callback) => {
-            const allowedOrigins = ['http://localhost:3000'];
-            if (process.env.CLIENT_ORIGIN) {
-                allowedOrigins.push(process.env.CLIENT_ORIGIN);
-            }
-
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
+            // Always allow - reflect the origin back
+            callback(null, origin || true);
         }
     })
 );
