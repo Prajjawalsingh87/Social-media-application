@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import Avatar from "../avatar/Avatar";
 import "./CreatePost.scss";
-import backgroundDummyImg from "../../assets/background.jpeg";
-import { BsCardImage } from "react-icons/bs";
-import { axiosClient } from "../../utils/axiosClient";
-import {useDispatch, useSelector} from 'react-redux';
-import { setLoading } from "../../redux/slices/appConfigSlice";
+import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from "../../redux/slices/postsSlice";
 
 function CreatePost() {
@@ -26,7 +22,7 @@ function CreatePost() {
         };
     };
 
-    const hanldePostSubmit = async() => {
+    const hanldePostSubmit = async () => {
         try {
             const result = await axiosClient.post('/posts', {
                 caption,
@@ -42,14 +38,14 @@ function CreatePost() {
             setCaption('');
             setPostImg('');
         }
-        
+
 
     }
 
     return (
         <div className="CreatePost">
             <div className="left-part">
-                <Avatar src={myProfile?.avatar?.url}/>
+                <Avatar src={myProfile?.avatar?.url} />
             </div>
             <div className="right-part">
                 <input

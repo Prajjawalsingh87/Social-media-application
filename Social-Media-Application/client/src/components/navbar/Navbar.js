@@ -3,15 +3,13 @@ import { AiOutlineHome, AiOutlineLogout, AiOutlineMail, AiOutlineSearch } from "
 import { useNavigate } from "react-router";
 import Avatar from "../avatar/Avatar";
 import "./Navbar.scss";
-import { useDispatch, useSelector } from 'react-redux';
-import { setLoading } from "../../redux/slices/appConfigSlice";
+import { useSelector } from 'react-redux';
 import { KEY_ACCESS_TOKEN, removeItem } from "../../utils/localStorageManager";
 import { axiosClient } from "../../utils/axiosClient";
 
 
 function Navbar() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const myProfile = useSelector(state => state.appConfigReducer.myProfile);
 
     async function handleLogoutClicked() {
