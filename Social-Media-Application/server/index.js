@@ -1,15 +1,15 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const dbConnect = require("./dbConnect");
-const authRouter = require("./routers/authRouter");
-const postsRouter = require("./routers/postsRouter");
-const userRouter = require("./routers/userRouter");
-const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const cloudinary = require("cloudinary").v2;
+import express from "express";
+import dotenv from "dotenv";
+import dbConnect from "./dbConnect.js";
+import authRouter from "./routers/authRouter.js";
+import postsRouter from "./routers/postsRouter.js";
+import userRouter from "./routers/userRouter.js";
+import morgan from "morgan";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
 
-dotenv.config("./.env");
+dotenv.config();
 
 // Configuration
 cloudinary.config({
@@ -50,3 +50,5 @@ dbConnect();
 app.listen(PORT, () => {
     console.log(`listening on port: ${PORT}`);
 });
+
+export default app;

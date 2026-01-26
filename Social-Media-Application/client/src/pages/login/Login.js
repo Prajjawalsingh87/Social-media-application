@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.scss";
-import {axiosClient} from "../../utils/axiosClient";
+import { axiosClient } from "../../utils/axiosClient";
 import { KEY_ACCESS_TOKEN, setItem } from "../../utils/localStorageManager";
 
 
@@ -28,26 +28,32 @@ function Login() {
 
     return (
         <div className="Login">
-            <div className="login-box">
+            <div className="login-box glass">
                 <h2 className="heading">Login</h2>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        className="email"
-                        id="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            className="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
 
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        className="password"
-                        id="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            className="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
 
-                    <input type="submit" className="submit" />
+                    <button type="submit" className="submit btn-primary">Login</button>
                 </form>
                 <p className="subheading">
                     Do not have an account? <Link to="/signup">Sign Up</Link>

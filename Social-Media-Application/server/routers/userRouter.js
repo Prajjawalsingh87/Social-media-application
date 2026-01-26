@@ -1,6 +1,7 @@
-const requireUser = require('../middlewares/requireUser');
-const UserController = require('../controllers/userController');
-const router = require('express').Router();
+import express from "express";
+import requireUser from '../middlewares/requireUser.js';
+import UserController from '../controllers/userController.js';
+const router = express.Router();
 
 router.post('/follow', requireUser, UserController.followOrUnfollowUserController);
 router.get('/getFeedData', requireUser, UserController.getPostsOfFollowing);
@@ -12,4 +13,4 @@ router.get('/getMyInfo', requireUser, UserController.getMyInfo);
 router.put('/', requireUser, UserController.updateUserProfile);
 router.post('/getUserProfile', requireUser, UserController.getUserProfile);
 
-module.exports = router;
+export default router;

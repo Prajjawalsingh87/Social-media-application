@@ -55,12 +55,12 @@ function Profile() {
                         <h3 className="user-name">{userProfile?.name}</h3>
                         <p className="bio">{userProfile?.bio}</p>
                         <div className="follower-info">
-                            <h4>{`${userProfile?.followers?.length} Followers`}</h4>
-                            <h4>{`${userProfile?.followings?.length} Followings`}</h4>
+                            <h4 data-label="Followers">{userProfile?.followers?.length}</h4>
+                            <h4 data-label="Followings">{userProfile?.followings?.length}</h4>
                         </div>
                         {!isMyProfile && (
                             <h5
-                                style={{marginTop:'10px'}}
+                                style={{ marginTop: '10px' }}
                                 onClick={handleUserFollow}
                                 className={
                                     isFollowing

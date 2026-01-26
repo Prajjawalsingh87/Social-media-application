@@ -1,52 +1,135 @@
 .Profile {
-    margin-top: 60px;
+    margin-top: 40px;
+    padding-bottom: 60px;
+
     .container {
         display: flex;
+        gap: 40px;
+        align-items: flex-start;
+    }
+
+    .left-part {
+        flex: 1.5;
+        max-width: 650px;
+        display: flex;
+        flex-direction: column;
         gap: 20px;
     }
-    .left-part {
-        flex: 2;
-        overflow-y: auto;
-    }
+
     .right-part {
         flex: 1;
-        margin-top: 20px;
+        position: sticky;
+        top: 110px;
     }
 
     .profile-card {
-        border: 1px solid var(--border-color);
-        border-radius: 4px;
+        background: var(--card-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: var(--glass-border);
+        border-radius: var(--radius-lg);
         text-align: center;
-        padding: 40px;
+        padding: 48px 32px;
+        box-shadow: var(--shadow-lg);
+        transition: all 0.4s ease;
 
-        .user-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        &:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: var(--shadow-glow), var(--shadow-lg);
         }
 
-        .user-name,
-        .follower-info {
-            margin-top: 12px;
+        .user-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--border-color);
+            padding: 4px;
+            object-fit: cover;
+            margin-bottom: 24px;
+            transition: all 0.5s ease;
+
+            &:hover {
+                transform: scale(1.05) rotate(5deg);
+                border-color: var(--accent-color);
+            }
+        }
+
+        .user-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
         }
 
         .bio {
-            margin-top: 6px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 24px;
+            max-width: 80%;
+            margin-inline: auto;
         }
 
         .follower-info {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 40px;
+            gap: 48px;
+            margin-block: 32px;
+            padding-block: 24px;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+
+            h4 {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: var(--text-primary);
+
+                &::after {
+                    content: attr(data-label);
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    color: var(--text-secondary);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+            }
         }
 
-        .follow, .update-profile {
-            margin-top: 20px;
-            display: inline-block;
+        .follow,
+        .update-profile {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
         }
+
         .follow-link {
             color: var(--accent-color);
+            font-weight: 600;
+            cursor: pointer;
+
+            &:hover {
+                color: var(--secondary-accent);
+            }
         }
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .Profile .container {
+        flex-direction: column-reverse;
+        gap: 30px;
+    }
+
+    .Profile .right-part {
+        position: relative;
+        top: 0;
+        width: 100%;
+    }
+
+    .Profile .left-part {
+        max-width: 100%;
     }
 }

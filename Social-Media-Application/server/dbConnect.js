@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-module.exports = async () => {
-    const mongoUri =
-        "mongodb+srv://prajjmongo2:3CscGb95KgS0ud7Y@cluster0.dvhagc6.mongodb.net/?retryWrites=true&w=majority";
+export default async () => {
+    const mongoUri = process.env.MONGODB_URI;
+    console.log("Attempting to connect to MongoDB with URI:", mongoUri ? mongoUri.replace(/:.+@/, ":****@") : "UNDEFINED");
 
     try {
         const connect = await mongoose.connect(mongoUri, {
@@ -12,7 +12,7 @@ module.exports = async () => {
 
         console.log(`MongoDB connected: ${connect.connection.host}`);
     } catch (error) {
-        console.log(error);
+        console.log("MongoDB connection error:", error.message);
         process.exit(1);
     }
 };

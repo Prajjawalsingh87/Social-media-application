@@ -24,34 +24,43 @@ function Signup() {
 
     return (
         <div className="Signup">
-            <div className="signup-box">
+            <div className="signup-box glass">
                 <h2 className="heading">Signup</h2>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="name">Name</label>
-                    <input
-                        type="text"
-                        className="name"
-                        id="name"
-                        onChange={(e) => setName(e.target.value)}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="name">Name</label>
+                        <input
+                            type="text"
+                            className="name"
+                            id="name"
+                            placeholder="Enter your name"
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </div>
 
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        className="email"
-                        id="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            className="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
 
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        className="password"
-                        id="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            className="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
 
-                    <input type="submit" className="submit" />
+                    <button type="submit" className="submit btn-primary">Signup</button>
                 </form>
                 <p className="subheading">
                     Already have an account? <Link to="/login">Log In</Link>

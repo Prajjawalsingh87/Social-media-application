@@ -41,7 +41,7 @@ function App() {
 
     return (
         <div className="App">
-            <LoadingBar color="#000" ref={loadingRef} />
+            <LoadingBar color="#6366f1" ref={loadingRef} />
             <div>
                 <Toaster />
             </div>

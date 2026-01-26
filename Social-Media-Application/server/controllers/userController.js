@@ -1,11 +1,10 @@
-const { json } = require("express");
-const Post = require("../models/Post");
-const User = require("../models/User");
-const { success, error } = require("../utils/responseWrapper");
-const cloudinary = require("cloudinary").v2;
-const { mapPostOutput } = require("../utils/Utils");
+import Post from "../models/Post.js";
+import User from "../models/User.js";
+import { success, error } from "../utils/responseWrapper.js";
+import { v2 as cloudinary } from "cloudinary";
+import { mapPostOutput } from "../utils/Utils.js";
 
-const followOrUnfollowUserController = async (req, res) => {
+export const followOrUnfollowUserController = async (req, res) => {
     try {
         const { userIdToFollow } = req.body;
         const curUserId = req._id;
@@ -29,13 +28,13 @@ const followOrUnfollowUserController = async (req, res) => {
         }
         await userToFollow.save();
         await curUser.save();
-        return res.send(success(200, {user: userToFollow}))
+        return res.send(success(200, { user: userToFollow }))
     } catch (e) {
         console.log(e);
         return res.send(error(500, e.message));
     }
 };
-const getPostsOfFollowing = async (req, res) => {
+export const getPostsOfFollowing = async (req, res) => {
     try {
         const curUserId = req._id;
         const curUser = await User.findById(curUserId).populate("followings");
@@ -49,7 +48,7 @@ const getPostsOfFollowing = async (req, res) => {
         const posts = fullPosts
             .map((item) => mapPostOutput(item, req._id))
             .reverse();
-        
+
         const followingsIds = curUser.followings.map((item) => item._id);
         followingsIds.push(req._id);
 
@@ -59,14 +58,14 @@ const getPostsOfFollowing = async (req, res) => {
             },
         });
 
-        return res.send(success(200, {...curUser._doc, suggestions, posts}));
-    } catch (error) {
+        return res.send(success(200, { ...curUser._doc, suggestions, posts }));
+    } catch (e) {
         console.log(e);
         return res.send(error(500, e.message));
     }
 };
 
-const getMyPosts = async (req, res) => {
+export const getMyPosts = async (req, res) => {
     try {
         const curUserId = req._id;
         const allUserPosts = await Post.find({
@@ -74,13 +73,13 @@ const getMyPosts = async (req, res) => {
         }).populate("likes");
 
         return res.send(success(200, { allUserPosts }));
-    } catch (error) {
+    } catch (e) {
         console.log(e);
         return res.send(error(500, e.message));
     }
 };
 
-const getUserPosts = async (req, res) => {
+export const getUserPosts = async (req, res) => {
     try {
         const userId = req.body.userId;
         if (!userId) {
@@ -92,13 +91,13 @@ const getUserPosts = async (req, res) => {
         }).populate("likes");
 
         return res.send(success(200, { allUserPosts }));
-    } catch (error) {
+    } catch (e) {
         console.log(e);
         return res.send(error(500, e.message));
     }
 };
 
-const deleteMyProfile = async (req, res) => {
+export const deleteMyProfile = async (req, res) => {
     try {
         const curUserId = req._id;
         const curUser = await User.findById(curUserId);
@@ -141,13 +140,13 @@ const deleteMyProfile = async (req, res) => {
         });
 
         return res.send(success(200, "user deleted"));
-    } catch (error) {
+    } catch (e) {
         console.log(e);
         return res.send(error(500, e.message));
     }
 };
 
-const getMyInfo = async (req, res) => {
+export const getMyInfo = async (req, res) => {
     try {
         const user = await User.findById(req._id);
         return res.send(success(200, { user }));
@@ -156,7 +155,7 @@ const getMyInfo = async (req, res) => {
     }
 };
 
-const updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
     try {
         const { name, bio, userImg } = req.body;
 
@@ -185,7 +184,7 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
     try {
         const userId = req.body.userId;
         const user = await User.findById(userId).populate({
@@ -207,7 +206,7 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-module.exports = {
+export default {
     followOrUnfollowUserController,
     getPostsOfFollowing,
     getMyPosts,

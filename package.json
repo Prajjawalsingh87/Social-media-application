@@ -1,9 +1,15 @@
 {
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cloudinary": "^2.4.0",
-    "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.6.1"
+  "name": "social-media-application-root",
+  "version": "1.0.0",
+  "description": "Root for running social media application client and server",
+  "scripts": {
+    "server": "cd Social-Media-Application/server && npm start",
+    "client": "cd Social-Media-Application/client && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "cd Social-Media-Application/client && npm run build",
+    "install-all": "npm install && cd Social-Media-Application/server && npm install && cd ../client && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

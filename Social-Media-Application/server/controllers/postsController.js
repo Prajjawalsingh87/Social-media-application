@@ -1,13 +1,13 @@
-const Post = require("../models/Post");
-const User = require("../models/User");
-const { success, error } = require("../utils/responseWrapper");
-const cloudinary = require('cloudinary').v2;
-const {mapPostOutput} = require('../utils/Utils')
+import Post from "../models/Post.js";
+import User from "../models/User.js";
+import { success, error } from "../utils/responseWrapper.js";
+import { v2 as cloudinary } from 'cloudinary';
+import { mapPostOutput } from '../utils/Utils.js';
 
-const createPostController = async (req, res) => {
+export const createPostController = async (req, res) => {
     try {
-        const {caption,postImg} = req.body;
-        if(!caption || !postImg) {
+        const { caption, postImg } = req.body;
+        if (!caption || !postImg) {
             return res.send(error(400, 'Caption and postImg are required'))
         }
         const cloudImg = await cloudinary.uploader.upload(postImg, {
@@ -36,7 +36,7 @@ const createPostController = async (req, res) => {
     }
 };
 
-const likeAndUnlikePost = async (req, res) => {
+export const likeAndUnlikePost = async (req, res) => {
     try {
         const { postId } = req.body;
         const curUserId = req._id;
@@ -53,14 +53,14 @@ const likeAndUnlikePost = async (req, res) => {
             post.likes.push(curUserId);
         }
         await post.save();
-        return res.send(success(200, {post: mapPostOutput(post, req._id)}));
+        return res.send(success(200, { post: mapPostOutput(post, req._id) }));
 
     } catch (e) {
         return res.send(error(500, e.message));
     }
 };
 
-const updatePostController = async (req, res) => {
+export const updatePostController = async (req, res) => {
     try {
         const { postId, caption } = req.body;
         const curUserId = req._id;
@@ -85,7 +85,7 @@ const updatePostController = async (req, res) => {
     }
 };
 
-const deletePost = async (req, res) => {
+export const deletePost = async (req, res) => {
     try {
         const { postId } = req.body;
         const curUserId = req._id;
@@ -111,7 +111,7 @@ const deletePost = async (req, res) => {
     }
 };
 
-module.exports = {
+export default {
     createPostController,
     likeAndUnlikePost,
     updatePostController,

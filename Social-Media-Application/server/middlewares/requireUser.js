@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const { error } = require("../utils/responseWrapper");
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import { error } from "../utils/responseWrapper.js";
 
-module.exports = async (req, res, next) => {
+export default async (req, res, next) => {
     if (
         !req.headers ||
         !req.headers.authorization ||
@@ -20,9 +20,9 @@ module.exports = async (req, res, next) => {
             process.env.ACCESS_TOKEN_PRIVATE_KEY
         );
         req._id = decoded._id;
-        
+
         const user = await User.findById(req._id);
-        if(!user) {
+        if (!user) {
             return res.send(error(404, 'User not found'));
         }
 

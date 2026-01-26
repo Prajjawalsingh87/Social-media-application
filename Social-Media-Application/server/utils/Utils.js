@@ -1,6 +1,6 @@
-var ta = require('time-ago');
+import ta from 'time-ago';
 
-const mapPostOutput = (post, userId) => {
+export const mapPostOutput = (post, userId) => {
     return {
         _id: post._id,
         caption: post.caption,
@@ -14,11 +14,7 @@ const mapPostOutput = (post, userId) => {
         isLiked: post.likes.includes(userId),
         timeAgo: ta.ago(post.createdAt)
     }
-}
-
-module.exports = {
-    mapPostOutput
-}
+};
 
 
 

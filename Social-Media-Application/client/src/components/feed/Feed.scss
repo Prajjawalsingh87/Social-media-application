@@ -1,26 +1,72 @@
 .Feed {
-    // height: calc(100vh - 60px);
-    margin-top: 60px;
-    
+    margin-top: 40px;
+    min-height: 100vh;
+
     .container {
         display: flex;
-        gap: 20px;
-        
+        gap: 40px;
+        padding-bottom: 40px;
     }
+
     .left-part {
-        flex: 2;
-        overflow-y: auto;
+        flex: 1.5;
+        max-width: 600px;
     }
+
     .right-part {
         flex: 1;
-        margin-top: 20px;
+        position: sticky;
+        top: 110px;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
     }
 
+    .following,
     .suggestions {
-        margin-top: 40px;
+        background: var(--card-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        padding: 24px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease;
+
+        &:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            position: relative;
+            padding-bottom: 10px;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 30px;
+                height: 3px;
+                background: var(--accent-color);
+                border-radius: 2px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .Feed .container {
+        flex-direction: column-reverse;
+        gap: 20px;
     }
 
-    .title {
-        margin-bottom: 12px;
+    .Feed .right-part {
+        position: relative;
+        top: 0;
     }
 }
