@@ -36,6 +36,8 @@ function App() {
             case TOAST_FAILURE:
                 toast.error(toastData.message);
                 break;
+            default:
+                break;
         }
     }, [toastData]);
 
