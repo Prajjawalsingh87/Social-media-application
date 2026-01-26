@@ -25,15 +25,16 @@ const app = express();
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("common"));
 app.use(cookieParser());
-cors({
-    credentials: true,
-    origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        // Allow any origin
-        callback(null, true);
-    }
-})
+app.use(
+    cors({
+        credentials: true,
+        origin: (origin, callback) => {
+            // Allow requests with no origin (like mobile apps or curl requests)
+            if (!origin) return callback(null, true);
+            // Allow any origin
+            callback(null, true);
+        }
+    })
 );
 
 app.use("/auth", authRouter);
