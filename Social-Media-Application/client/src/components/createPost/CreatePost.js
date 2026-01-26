@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Avatar from "../avatar/Avatar";
 import "./CreatePost.scss";
+import { BsCardImage } from "react-icons/bs";
+import { axiosClient } from "../../utils/axiosClient";
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from "../../redux/slices/postsSlice";
 
