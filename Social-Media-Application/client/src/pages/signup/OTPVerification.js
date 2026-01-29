@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { axiosClient } from "../../utils/axiosClient";
 import toast from "react-hot-toast";
 import "./OTPVerification.scss";
@@ -18,12 +18,8 @@ function OTPVerification({ email, onVerificationSuccess, onBackToSignup }) {
         }
     }, [timeLeft]);
 
-    // Check OTP status on mount
-    useEffect(() => {
-        checkOTPStatus();
-    }, [email]);
-
-    const checkOTPStatus = async () => {
+    // Check OTP status function with useCallback to avoid dependency issues
+    const checkOTPStatus = useCallback(async () => {
         try {
             const result = await axiosClient.post("/auth/check-otp-status", { email });
             if (result.data.data) {
@@ -32,7 +28,12 @@ function OTPVerification({ email, onVerificationSuccess, onBackToSignup }) {
         } catch (error) {
             console.log("Error checking OTP status:", error);
         }
-    };
+    }, [email]);
+
+    // Check OTP status on mount
+    useEffect(() => {
+        checkOTPStatus();
+    }, [checkOTPStatus]);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
