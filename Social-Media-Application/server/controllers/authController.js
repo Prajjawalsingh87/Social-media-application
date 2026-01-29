@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { error, success } from "../utils/responseWrapper.js";
+import { generateOTP, getOTPExpiryTime, isOTPValid } from "../utils/otp.js";
+import { sendOTPEmail } from "../utils/email.js";
 
 export const signupController = async (req, res) => {
     try {
@@ -17,7 +19,7 @@ export const signupController = async (req, res) => {
             // return res.status(409).send("User is already registered");
             return res.send(error(409, "User is already registered"));
         }
-
+        
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
@@ -114,6 +116,103 @@ export const logoutController = async (req, res) => {
     }
 }
 
+// Send OTP to email
+export const sendOTPController = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.send(error(400, "Email is required"));
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.send(error(404, "User not found"));
+        }
+
+        // Generate OTP
+        const otp = generateOTP();
+        const otpExpiresAt = getOTPExpiryTime(10); // Valid for 10 minutes
+
+        // Update user with OTP in database
+        await User.findByIdAndUpdate(user._id, {
+            otp: otp,
+            otpExpiresAt: otpExpiresAt
+        });
+
+        // Send OTP to email
+        await sendOTPEmail(email, otp);
+
+        return res.send(success(200, "OTP sent to your email"));
+    } catch (e) {
+        return res.send(error(500, e.message));
+    }
+};
+
+// Verify OTP
+export const verifyOTPController = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.send(error(400, "Email and OTP are required"));
+        }
+
+        const user = await User.findOne({ email }).select('+otp +otpExpiresAt');
+        if (!user) {
+            return res.send(error(404, "User not found"));
+        }
+
+        if (!user.otp) {
+            return res.send(error(400, "No OTP found. Request a new one."));
+        }
+
+        // Verify OTP validity
+        const validation = isOTPValid(user.otp, user.otpExpiresAt, otp);
+        
+        if (!validation.valid) {
+            return res.send(error(400, validation.message));
+        }
+
+        // Clear OTP from database after successful verification
+        await User.findByIdAndUpdate(user._id, {
+            otp: null,
+            otpExpiresAt: null
+        });
+
+        return res.send(success(200, "OTP verified successfully"));
+    } catch (e) {
+        return res.send(error(500, e.message));
+    }
+};
+
+// Check OTP status in database
+export const checkOTPStatusController = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.send(error(400, "Email is required"));
+        }
+
+        const user = await User.findOne({ email }).select('+otp +otpExpiresAt');
+        if (!user) {
+            return res.send(error(404, "User not found"));
+        }
+
+        const hasOTP = !!user.otp;
+        const isExpired = hasOTP ? new Date() > new Date(user.otpExpiresAt) : null;
+
+        return res.send(success(200, {
+            hasOTP: hasOTP,
+            isExpired: isExpired,
+            expiresAt: user.otpExpiresAt
+        }));
+    } catch (e) {
+        return res.send(error(500, e.message));
+    }
+};
+
 //internal functions
 const generateAccessToken = (data) => {
     try {
@@ -143,5 +242,8 @@ export default {
     signupController,
     loginController,
     refreshAccessTokenController,
-    logoutController
+    logoutController,
+    sendOTPController,
+    verifyOTPController,
+    checkOTPStatusController
 };
