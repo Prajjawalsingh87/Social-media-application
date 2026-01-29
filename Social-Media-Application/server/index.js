@@ -25,14 +25,37 @@ const app = express();
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("common"));
 app.use(cookieParser());
-// CORS: Allow any origin by reflecting it back (required for credentials)
+
+// CORS configuration for production and development
+const allowedOrigins = [
+    'http://localhost:3000',      // Local development
+    'http://localhost:4001',      // Local backend
+    'https://localhost:3000',     // Local HTTPS
+    process.env.FRONTEND_URL,     // Production frontend (from .env)
+];
+
 app.use(
     cors({
+        origin: function (origin, callback) {
+            // Allow requests with no origin (like mobile apps or curl requests)
+            if (!origin) return callback(null, true);
+            
+            // Check if origin is in allowed list
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                // For development, allow all origins; for production, be strict
+                if (process.env.NODE_ENV === 'production') {
+                    callback(new Error('Not allowed by CORS'));
+                } else {
+                    callback(null, true);
+                }
+            }
+        },
         credentials: true,
-        origin: (origin, callback) => {
-            // Always allow - reflect the origin back
-            callback(null, origin || true);
-        }
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        optionsSuccessStatus: 200
     })
 );
 
