@@ -9,7 +9,7 @@ import store from '../redux/store';
 import { setLoading, showToast } from "../redux/slices/appConfigSlice";
 import { TOAST_FAILURE } from "../App";
 
-let baseURL = process.env.REACT_APP_SERVER_BASE_URL || 'http://localhost:4001';
+let baseURL = process.env.REACT_APP_API_URL || 'http://localhost:4001';
 
 console.log('API Base URL:', baseURL);
 
