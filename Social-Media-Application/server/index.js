@@ -21,25 +21,15 @@ cloudinary.config({
 
 const app = express();
 
-const allowedOrigins = [
-    process.env.CLIENT_URL,
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-].filter(Boolean);
-
 //middlewares
 app.use(express.json({ limit: "10mb" }));
 app.use(morgan("common"));
 app.use(cookieParser());
 
-// CORS configuration for local dev and deployed frontend
+// CORS configuration for local dev and Vercel deployments
+// Reflects the request origin so cookies can still work without an env allowlist.
 const corsOptions = {
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        return callback(new Error("Not allowed by CORS"));
-    },
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
