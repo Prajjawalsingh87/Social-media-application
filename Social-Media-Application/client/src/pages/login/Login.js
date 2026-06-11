@@ -1,14 +1,25 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Login.scss";
 import { axiosClient } from "../../utils/axiosClient";
 import { KEY_ACCESS_TOKEN, setItem } from "../../utils/localStorageManager";
+import toast from "react-hot-toast";
 
 
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.email) {
+            setEmail(location.state.email);
+        }
+        if (location.state?.message) {
+            toast.success(location.state.message);
+        }
+    }, [location.state]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -30,6 +41,7 @@ function Login() {
         <div className="Login">
             <div className="login-box glass">
                 <h2 className="heading">Login</h2>
+                <p className="subtext">Welcome back. Jump into your feed and continue where you left off.</p>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
@@ -38,6 +50,7 @@ function Login() {
                             className="email"
                             id="email"
                             placeholder="Enter your email"
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
@@ -49,6 +62,7 @@ function Login() {
                             className="password"
                             id="password"
                             placeholder="Enter your password"
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>

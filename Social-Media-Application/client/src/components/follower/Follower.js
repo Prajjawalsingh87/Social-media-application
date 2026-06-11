@@ -13,7 +13,7 @@ function Follower({ user }) {
 
     useEffect(() => {
         setIsFollowing(
-            feedData.followings.find((item) => item._id === user._id)
+            Boolean(feedData?.followings?.find((item) => item._id === user._id))
         );
     }, [feedData, user._id]);
 
@@ -30,13 +30,13 @@ function Follower({ user }) {
                 <h4 className="name">{user?.name}</h4>
             </div>
 
-            <h5 onClick={handleUserFollow}
+            <button type="button" onClick={handleUserFollow}
                 className={
-                    isFollowing ? "hover-link follow-link" : "btn-primary"
+                    isFollowing ? "btn-secondary follow-link" : "btn-primary"
                 }
             >
                 {isFollowing ? "Unfollow" : "Follow"}
-            </h5>
+            </button>
         </div>
     );
 }

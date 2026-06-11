@@ -5,6 +5,8 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useDispatch } from 'react-redux';
 import { likeAndUnlikePost } from "../../redux/slices/postsSlice";
 import { useNavigate } from "react-router";
+import { FiMessageCircle } from "react-icons/fi";
+import { HiOutlineShare } from "react-icons/hi";
 
 function Post({ post }) {
     const dispatch = useDispatch();
@@ -26,8 +28,12 @@ function Post({ post }) {
             </div>
             <div className="footer">
                 <div className="like" onClick={handlePostLiked}>
-                    {post.isLiked ? <AiFillHeart style={{ color: 'red' }} className="icon" /> : <AiOutlineHeart className="icon" />}
+                    {post.isLiked ? <AiFillHeart className="icon liked" /> : <AiOutlineHeart className="icon" />}
                     <h4>{`${post.likesCount} likes`}</h4>
+                </div>
+                <div className="actions">
+                    <FiMessageCircle className="comment-icon" />
+                    <HiOutlineShare className="share-icon" />
                 </div>
                 <p className="caption">{post.caption}</p>
                 <h6 className="time-ago">{post?.timeAgo}</h6>

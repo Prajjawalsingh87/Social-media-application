@@ -11,6 +11,9 @@ import { useEffect, useRef } from "react";
 import LoadingBar from "react-top-loading-bar";
 import OnlyIfNotLoggedIn from "./components/OnlyIfNotLoggedIn";
 import toast, { Toaster } from "react-hot-toast";
+import { getItem } from "./utils/localStorageManager";
+
+const KEY_THEME_MODE = "theme_mode";
 
 export const TOAST_SUCCESS = "toast_success";
 export const TOAST_FAILURE = "toast_failure";
@@ -19,6 +22,11 @@ function App() {
     const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
     const toastData = useSelector((state) => state.appConfigReducer.toastData);
     const loadingRef = useRef(null);
+
+    useEffect(() => {
+        const savedTheme = getItem(KEY_THEME_MODE) || "dark";
+        document.body.dataset.theme = savedTheme;
+    }, []);
 
     useEffect(() => {
         if (isLoading) {

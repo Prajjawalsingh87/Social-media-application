@@ -66,7 +66,8 @@ export const loginController = async (req, res) => {
 
         res.cookie("jwt", refreshToken, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         });
 
         return res.send(success(200, { accessToken }));
@@ -108,7 +109,8 @@ export const logoutController = async (req, res) => {
     try {
         res.clearCookie('jwt', {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         })
         return res.send(success(200, 'user logged out'))
     } catch (e) {

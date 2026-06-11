@@ -68,28 +68,41 @@ vercel ▲ + cloudinary ☁️
 
 ---
 
-## � run it yourself
+## Run locally
+
+From the repo root:
 
 ```bash
-# clone it
-git clone https://github.com/Prajjawalsingh87/Social-media-application.git
+npm install
+npm run install-all
+npm run dev
+```
 
-# backend
+If you prefer to start each part manually:
+
+```bash
 cd Social-Media-Application/server
 npm install
 npm start
+```
 
-# frontend (new terminal)
+```bash
 cd Social-Media-Application/client
 npm install
 npm start
 ```
 
-> 💡 don't forget to add your `.env` files with mongodb, cloudinary, and jwt keys!
+Add the required `.env` values in `Social-Media-Application/server` before starting the backend:
+
+- `MONGO_URI`
+- `JWT_SECRET`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
 
 ---
 
-## � api endpoints
+## API endpoints
 
 ```
 POST /auth/signup     → create account

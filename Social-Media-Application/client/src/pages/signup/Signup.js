@@ -48,7 +48,12 @@ function Signup() {
 
     const handleVerificationSuccess = () => {
         toast.success("Email verified! You can now login.");
-        navigate("/login");
+        navigate("/login", {
+            state: {
+                email,
+                message: "Account verified successfully. Please log in.",
+            },
+        });
     };
 
     const handleBackToSignup = () => {
@@ -73,6 +78,7 @@ function Signup() {
         <div className="Signup">
             <div className="signup-box glass">
                 <h2 className="heading">Signup</h2>
+                <p className="subtext">Create your account and start sharing moments with your circle.</p>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="name">Name</label>

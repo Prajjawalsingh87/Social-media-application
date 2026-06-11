@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./UpdateProfile.scss";
-import "./UpdateProfile.scss";
-import dummyUserImg from '../../assets/user.png'
+import dummyUserImg from "../../assets/user.png";
 import { useSelector, useDispatch } from "react-redux";
 import { updateMyProfile } from "../../redux/slices/appConfigSlice";
+import toast from "react-hot-toast";
 
 function UpdateProfile() {
     const myProfile = useSelector((state) => state.appConfigReducer.myProfile);
     const [name, setName] = useState("");
     const [bio, setBio] = useState("");
     const [userImg, setUserImg] = useState("");
+    const [saving, setSaving] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -32,11 +33,22 @@ function UpdateProfile() {
 
     function handleSubmit(e) {
         e.preventDefault();
+        setSaving(true);
         dispatch(updateMyProfile({
             name,
             bio,
             userImg
-        }));
+        }))
+            .unwrap()
+            .then(() => {
+                toast.success("Profile updated successfully");
+            })
+            .catch(() => {
+                toast.error("Unable to update profile");
+            })
+            .finally(() => {
+                setSaving(false);
+            });
     }
 
     return (
@@ -57,6 +69,10 @@ function UpdateProfile() {
                     </div>
                 </div>
                 <div className="right-part">
+                    <div className="header">
+                        <h2>Update your profile</h2>
+                        <p>Refresh your name, bio, and avatar in one place.</p>
+                    </div>
                     <form onSubmit={handleSubmit}>
                         <input
                             value={name}
@@ -70,10 +86,12 @@ function UpdateProfile() {
                             placeholder="Your Bio"
                             onChange={(e) => setBio(e.target.value)}
                         />
-                        <input type="submit" className="btn-primary" onClick={handleSubmit} />
+                        <button type="submit" className="btn-primary" disabled={saving}>
+                            {saving ? "Saving..." : "Save Changes"}
+                        </button>
                     </form>
 
-                    <button className="delete-account btn-primary">
+                    <button type="button" className="delete-account">
                         Delete Account
                     </button>
                 </div>

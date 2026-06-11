@@ -5,10 +5,13 @@ import { BsCardImage } from "react-icons/bs";
 import { axiosClient } from "../../utils/axiosClient";
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from "../../redux/slices/postsSlice";
+import { getFeedData } from "../../redux/slices/feedSlice";
+import toast from "react-hot-toast";
 
 function CreatePost() {
     const [postImg, setPostImg] = useState("");
     const [caption, setCaption] = useState('')
+    const [posting, setPosting] = useState(false);
     const dispatch = useDispatch();
     const myProfile = useSelector(state => state.appConfigReducer.myProfile);
 
@@ -25,23 +28,29 @@ function CreatePost() {
     };
 
     const hanldePostSubmit = async () => {
+        if (!caption.trim() || !postImg) {
+            toast.error("Add a caption and image before posting");
+            return;
+        }
+
+        setPosting(true);
         try {
-            const result = await axiosClient.post('/posts', {
+            await axiosClient.post('/posts', {
                 caption,
                 postImg
             });
-            console.log('post done', result);
-            dispatch(getUserProfile({
-                userId: myProfile?._id
-            }));
-        } catch (error) {
-            console.log('what is th error', error);
-        } finally {
+            await Promise.all([
+                dispatch(getUserProfile({ userId: myProfile?._id })),
+                dispatch(getFeedData()),
+            ]);
+            toast.success("Post published to your feed");
             setCaption('');
             setPostImg('');
+        } catch (error) {
+            toast.error("Could not publish post");
+        } finally {
+            setPosting(false);
         }
-
-
     }
 
     return (
@@ -80,7 +89,13 @@ function CreatePost() {
                             onChange={handleImageChange}
                         />
                     </div>
-                    <button className="post-btn btn-primary" onClick={hanldePostSubmit}>Post</button>
+                    <button
+                        className="post-btn btn-primary"
+                        onClick={hanldePostSubmit}
+                        disabled={posting}
+                    >
+                        {posting ? "Posting..." : "Post"}
+                    </button>
                 </div>
             </div>
         </div>

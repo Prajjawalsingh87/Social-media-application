@@ -4,36 +4,53 @@
     align-items: center;
     min-height: 100vh;
     padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
 
     .otp-box {
         width: 100%;
         max-width: 400px;
         padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at top, rgba(139, 92, 246, 0.08), transparent 40%),
+                radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.08), transparent 35%);
+            pointer-events: none;
+        }
+
+        > * {
+            position: relative;
+            z-index: 1;
+        }
 
         .heading {
             text-align: center;
             margin-bottom: 10px;
-            color: #333;
-            font-size: 28px;
+            font-size: 2rem;
         }
 
         .email-display {
             text-align: center;
             margin-bottom: 30px;
             padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
 
             p {
                 margin: 5px 0;
-                color: #666;
+                color: var(--text-secondary);
 
                 &.email-value {
                     font-weight: bold;
-                    color: #667eea;
+                    color: var(--accent-primary);
                     font-size: 16px;
                 }
             }
@@ -45,7 +62,7 @@
             label {
                 display: block;
                 margin-bottom: 8px;
-                color: #333;
+                color: var(--text-secondary);
                 font-weight: 500;
             }
 
@@ -55,18 +72,20 @@
                 font-size: 24px;
                 letter-spacing: 15px;
                 text-align: center;
-                border: 2px solid #ddd;
-                border-radius: 10px;
+                border: 2px solid var(--glass-border);
+                border-radius: var(--radius-md);
+                background: rgba(255, 255, 255, 0.03);
+                color: var(--text-primary);
                 transition: all 0.3s ease;
 
                 &:focus {
                     outline: none;
-                    border-color: #667eea;
-                    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+                    border-color: var(--accent-primary);
+                    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
                 }
 
                 &:disabled {
-                    background-color: #f0f0f0;
+                    background-color: rgba(255, 255, 255, 0.02);
                     cursor: not-allowed;
                 }
             }
@@ -74,7 +93,7 @@
             .otp-hint {
                 display: block;
                 margin-top: 5px;
-                color: #999;
+                color: var(--text-muted);
                 font-size: 12px;
             }
         }
@@ -86,11 +105,11 @@
 
             span {
                 &.warning {
-                    color: #ff6b6b;
+                    color: var(--warning);
                 }
 
                 &.expired {
-                    color: #ff6b6b;
+                    color: var(--warning);
                     font-weight: bold;
                 }
             }
@@ -101,13 +120,13 @@
             padding: 12px;
             font-size: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             cursor: pointer;
             transition: all 0.3s ease;
 
             &:hover:not(:disabled) {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+                box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
             }
 
             &:disabled {
@@ -120,10 +139,10 @@
             text-align: center;
             margin: 25px 0;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid var(--glass-border);
 
             p {
-                color: #666;
+                color: var(--text-secondary);
                 margin-bottom: 10px;
                 font-size: 14px;
             }
@@ -131,14 +150,14 @@
             .resend-btn {
                 background: none;
                 border: none;
-                color: #667eea;
+                color: var(--accent-primary);
                 font-weight: 600;
                 cursor: pointer;
                 text-decoration: underline;
                 transition: color 0.3s ease;
 
                 &:hover:not(:disabled) {
-                    color: #764ba2;
+                    color: var(--accent-secondary);
                 }
 
                 &:disabled {
@@ -151,45 +170,39 @@
         .back-btn {
             width: 100%;
             padding: 12px;
-            background: #f0f0f0;
-            border: none;
-            border-radius: 8px;
-            color: #333;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
 
             &:hover {
-                background: #e0e0e0;
+                background: rgba(255, 255, 255, 0.08);
+                border-color: var(--accent-primary);
             }
         }
 
         .status-info {
             margin-top: 20px;
             padding: 10px;
-            background: #e8f5e9;
-            border-left: 4px solid #4caf50;
-            border-radius: 5px;
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 4px solid var(--success);
+            border-radius: var(--radius-sm);
             font-size: 12px;
 
             p {
                 margin: 5px 0;
-                color: #2e7d32;
+                color: var(--success);
             }
 
             .expires {
                 font-size: 11px;
-                color: #558b2f;
+                color: var(--success);
             }
         }
     }
-}
-
-// Glass morphism effect
-.glass {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 // Responsive

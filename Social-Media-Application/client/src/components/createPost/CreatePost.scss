@@ -5,7 +5,7 @@
     -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-xl);
-    padding: 24px;
+    padding: 22px;
     gap: 16px;
     margin-bottom: 24px;
     transition: var(--transition-normal);
@@ -29,7 +29,7 @@
         .captionInput {
             width: 100%;
             padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.025);
             border: 2px solid var(--glass-border);
             border-radius: var(--radius-lg);
             color: var(--text-primary);
@@ -46,8 +46,8 @@
 
             &:focus {
                 border-color: var(--accent-primary);
-                background: rgba(139, 92, 246, 0.05);
-                box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+                background: rgba(124, 109, 246, 0.06);
+                box-shadow: 0 0 20px rgba(124, 109, 246, 0.1);
             }
         }
 
@@ -169,7 +169,7 @@
 
     50% {
         transform: scale(1.02);
-        border-color: var(--success);
+        border-color: var(--accent-secondary);
     }
 
     100% {

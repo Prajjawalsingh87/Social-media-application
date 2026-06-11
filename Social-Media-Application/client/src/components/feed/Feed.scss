@@ -1,27 +1,31 @@
 .Feed {
-    margin-top: 32px;
+    margin-top: 18px;
     min-height: 100vh;
     animation: fadeIn 0.5s ease-out;
 
     .container {
         display: flex;
-        gap: 40px;
-        padding-bottom: 60px;
+        gap: 36px;
+        padding-bottom: 48px;
+        align-items: flex-start;
+        justify-content: space-between;
     }
 
     .left-part {
-        flex: 1.6;
-        max-width: 600px;
+        flex: 1 1 820px;
+        max-width: 820px;
     }
 
     .right-part {
-        flex: 1;
+        flex: 0 0 300px;
+        max-width: 300px;
         position: sticky;
-        top: 100px;
+        top: 94px;
         height: fit-content;
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        gap: 18px;
+        margin-left: auto;
     }
 
     .following,
@@ -31,7 +35,7 @@
         -webkit-backdrop-filter: var(--glass-blur);
         border: 1px solid var(--glass-border);
         border-radius: var(--radius-xl);
-        padding: 24px;
+        padding: 18px;
         transition: var(--transition-normal);
 
         &:hover {
@@ -40,9 +44,9 @@
         }
 
         .title {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             color: var(--text-primary);
             display: flex;
             align-items: center;
@@ -64,7 +68,7 @@
         .user-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 10px;
         }
 
         .user-item {
@@ -85,20 +89,20 @@
                 flex: 1;
 
                 .name {
-                    font-size: 0.95rem;
+                    font-size: 0.92rem;
                     font-weight: 600;
                     color: var(--text-primary);
                 }
 
                 .username {
-                    font-size: 0.8rem;
+                    font-size: 0.78rem;
                     color: var(--text-muted);
                 }
             }
 
             .follow-btn {
-                padding: 8px 16px;
-                font-size: 0.85rem;
+                padding: 6px 12px;
+                font-size: 0.77rem;
                 border-radius: var(--radius-md);
             }
         }
@@ -184,17 +188,19 @@
 
     .Feed .left-part {
         max-width: 100%;
+        flex: 1 1 auto;
     }
 
     .Feed .right-part {
         position: relative;
         top: 0;
-        flex-direction: row;
-        overflow-x: auto;
+        flex-direction: column;
+        max-width: 100%;
+        flex: 1;
     }
 
     .Feed .following,
     .Feed .suggestions {
-        min-width: 280px;
+        min-width: auto;
     }
 }

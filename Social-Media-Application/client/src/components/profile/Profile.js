@@ -25,7 +25,7 @@ function Profile() {
         );
         setIsMyProfile(myProfile?._id === params.userId);
         setIsFollowing(
-            feedData?.followings?.find((item) => item._id === params.userId)
+            Boolean(feedData?.followings?.find((item) => item._id === params.userId))
         );
     }, [myProfile, params.userId, feedData, dispatch]);
 
@@ -54,21 +54,28 @@ function Profile() {
                         <h3 className="user-name">{userProfile?.name}</h3>
                         <p className="bio">{userProfile?.bio}</p>
                         <div className="follower-info">
-                            <h4 data-label="Followers">{userProfile?.followers?.length}</h4>
-                            <h4 data-label="Followings">{userProfile?.followings?.length}</h4>
+                            <div className="stat">
+                                <span className="stat-value">{userProfile?.followers?.length || 0}</span>
+                                <span className="stat-label">Followers</span>
+                            </div>
+                            <div className="stat">
+                                <span className="stat-value">{userProfile?.followings?.length || 0}</span>
+                                <span className="stat-label">Following</span>
+                            </div>
                         </div>
                         {!isMyProfile && (
-                            <h5
+                            <button
+                                type="button"
                                 style={{ marginTop: '10px' }}
                                 onClick={handleUserFollow}
                                 className={
                                     isFollowing
-                                        ? "hover-link follow-link"
+                                        ? "btn-secondary follow-link"
                                         : "btn-primary"
                                 }
                             >
                                 {isFollowing ? "Unfollow" : "Follow"}
-                            </h5>
+                            </button>
                         )}
                         {isMyProfile && (
                             <button
