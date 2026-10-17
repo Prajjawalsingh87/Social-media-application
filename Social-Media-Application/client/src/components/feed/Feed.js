@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { getFeedData } from '../../redux/slices/feedSlice';
 import { BsImages } from 'react-icons/bs';
+import { AiOutlineHome, AiOutlineUser, AiOutlineSetting, AiOutlineMessage } from 'react-icons/ai';
 
 function Feed() {
 
@@ -23,9 +24,60 @@ function Feed() {
   const followings = feedData?.followings || [];
   const suggestions = feedData?.suggestions || [];
 
+  const menu = [
+    { label: 'Home', icon: <AiOutlineHome />, onClick: () => navigate('/'), active: true },
+    { label: 'My profile', icon: <AiOutlineUser />, onClick: () => navigate(`/profile/${myProfile?._id}`) },
+    { label: 'Edit profile', icon: <AiOutlineSetting />, onClick: () => navigate('/updateProfile') },
+    { label: 'Messages', icon: <AiOutlineMessage />, soon: true },
+  ];
+
   return (
     <div className="Feed">
       <div className="container">
+        <aside className="feed-left">
+          {myProfile?._id && (
+            <div className="card me-card">
+              <div className="me-cover" aria-hidden="true" />
+              <button
+                type="button"
+                className="me-body"
+                onClick={() => navigate(`/profile/${myProfile._id}`)}
+              >
+                <Avatar src={myProfile?.avatar?.url} size="lg" />
+                <span className="me-name">{myProfile?.name}</span>
+                {myProfile?.bio && <span className="me-bio">{myProfile.bio}</span>}
+              </button>
+              <div className="me-stats">
+                <div>
+                  <span className="value">{myProfile?.followers?.length || 0}</span>
+                  <span className="label">Followers</span>
+                </div>
+                <div>
+                  <span className="value">{followings.length}</span>
+                  <span className="label">Following</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <nav className="card side-menu" aria-label="Shortcuts">
+            {menu.map(item => (
+              <button
+                key={item.label}
+                type="button"
+                className={`menu-item ${item.active ? 'active' : ''}`}
+                onClick={item.onClick}
+                disabled={item.soon}
+                title={item.soon ? 'Coming soon' : undefined}
+              >
+                <span className="menu-icon">{item.icon}</span>
+                {item.label}
+                {item.soon && <span className="soon">Soon</span>}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
         <main className="feed-main">
           {posts.length > 0 ? (
             posts.map(post => <Post key={post._id} post={post} />)
@@ -38,21 +90,7 @@ function Feed() {
           )}
         </main>
 
-        <aside className="feed-sidebar">
-          {myProfile?._id && (
-            <button
-              type="button"
-              className="card me-card"
-              onClick={() => navigate(`/profile/${myProfile._id}`)}
-            >
-              <Avatar src={myProfile?.avatar?.url} size="lg" />
-              <span className="me-info">
-                <span className="me-name">{myProfile?.name}</span>
-                <span className="me-link">View your profile</span>
-              </span>
-            </button>
-          )}
-
+        <aside className="feed-right">
           <section className="card side-section">
             <h3 className="section-title">
               Following <span className="count">{followings.length}</span>

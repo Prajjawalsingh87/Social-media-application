@@ -1,64 +1,165 @@
 .Feed {
+    /* Three columns on desktop: profile + shortcuts | posts | people */
     .container {
         display: grid;
-        grid-template-columns: minmax(0, 600px) 320px;
+        grid-template-columns: 240px minmax(0, 600px) 300px;
         justify-content: center;
-        gap: 32px;
+        gap: 16px;
         align-items: start;
+    }
+
+    .feed-left,
+    .feed-right {
+        position: sticky;
+        top: calc(var(--navbar-height) + 16px);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
     }
 
     .feed-main {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 12px;
         min-width: 0;
     }
 
-    .feed-sidebar {
-        position: sticky;
-        top: calc(var(--navbar-height) + 24px);
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
+    /* ---------- Left: profile card ---------- */
     .me-card {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 16px;
-        text-align: left;
-        cursor: pointer;
-        transition: background var(--transition);
+        overflow: hidden;
+        text-align: center;
 
-        &:hover {
-            background: var(--bg-subtle);
+        .me-cover {
+            height: 44px;
+            background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 55%, #e0569b 100%);
         }
 
-        .me-info {
+        .me-body {
+            width: 100%;
             display: flex;
             flex-direction: column;
-            min-width: 0;
+            align-items: center;
+            gap: 2px;
+            padding: 0 12px 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+
+            .Avatar {
+                position: relative;
+                margin-top: -28px;
+                margin-bottom: 4px;
+
+                img {
+                    border: 3px solid var(--bg-surface);
+                    background: var(--bg-surface);
+                }
+            }
+
+            &:hover .me-name {
+                text-decoration: underline;
+            }
         }
 
         .me-name {
             font-weight: 600;
             color: var(--text-primary);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
-        .me-link {
+        .me-bio {
             font-size: 0.8125rem;
-            color: var(--accent);
-            font-weight: 500;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .me-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-top: 1px solid var(--border);
+
+            div {
+                display: flex;
+                flex-direction: column;
+                padding: 6px 0;
+
+                & + div {
+                    border-left: 1px solid var(--border);
+                }
+            }
+
+            .value {
+                font-weight: 700;
+                color: var(--text-primary);
+            }
+
+            .label {
+                font-size: 0.75rem;
+                color: var(--text-muted);
+            }
         }
     }
 
+    /* ---------- Left: shortcuts ---------- */
+    .side-menu {
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 36px;
+            padding: 0 10px;
+            background: none;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-align: left;
+            cursor: pointer;
+            transition: background var(--transition), color var(--transition);
+
+            &:hover:not(:disabled) {
+                background: var(--bg-hover);
+                color: var(--text-primary);
+            }
+
+            &.active {
+                background: var(--accent-soft);
+                color: var(--accent);
+                font-weight: 600;
+            }
+
+            &:disabled {
+                opacity: 1;
+                color: var(--text-muted);
+            }
+
+            .menu-icon {
+                display: grid;
+                font-size: 1.25rem;
+            }
+
+            .soon {
+                margin-left: auto;
+                font-size: 0.6875rem;
+                font-weight: 600;
+                color: var(--text-muted);
+                background: var(--bg-hover);
+                border-radius: var(--radius-full);
+                padding: 1px 8px;
+            }
+        }
+    }
+
+    /* ---------- Right: people ---------- */
     .side-section {
-        padding: 16px 16px 8px;
+        padding: 12px 14px 4px;
 
         .section-title {
             font-size: 0.9375rem;
@@ -86,17 +187,24 @@
     }
 }
 
+/* Laptop: drop the left column, keep posts + people */
+@media (max-width: 1240px) {
+    .Feed .container {
+        grid-template-columns: minmax(0, 600px) 300px;
+    }
+
+    .Feed .feed-left {
+        display: none;
+    }
+}
+
+/* Tablet / phone: one column, posts first */
 @media (max-width: 980px) {
     .Feed .container {
         grid-template-columns: minmax(0, 600px);
     }
 
-    /* Posts first on small screens; people lists follow below them. */
-    .Feed .feed-sidebar {
+    .Feed .feed-right {
         position: static;
-    }
-
-    .Feed .me-card {
-        display: none;
     }
 }

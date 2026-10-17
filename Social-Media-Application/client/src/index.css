@@ -39,8 +39,8 @@
   --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.25);
 
   /* Layout */
-  --navbar-height: 64px;
-  --content-width: 1080px;
+  --navbar-height: 60px;
+  --content-width: 1204px; /* 240 + 600 + 300 columns + 2x16 gaps + 2x16 padding */
 
   --transition: 150ms ease;
 }
