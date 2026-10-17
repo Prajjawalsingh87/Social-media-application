@@ -1,63 +1,37 @@
 .Follower {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-block: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-
-    &:last-child {
-        border-bottom: none;
-    }
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
 
     .user-info {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
+        min-width: 0;
+        background: none;
+        border: none;
         cursor: pointer;
-        transition: all 0.3s ease;
+        text-align: left;
+        border-radius: var(--radius-md);
 
         &:hover .name {
-            color: var(--accent-color);
-        }
-
-        .name {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            transition: color 0.3s ease;
+            text-decoration: underline;
         }
     }
 
-    .follow-link {
-        font-size: 0.85rem;
+    .name {
+        font-size: 0.875rem;
         font-weight: 600;
-        color: var(--accent-color);
-        cursor: pointer;
-        padding: 6px 12px;
-        border-radius: var(--radius-md);
-        transition: all 0.2s ease;
-        border: none;
-        background: transparent;
-
-        &:hover {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--secondary-accent);
-        }
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    .btn-primary {
-        padding: 6px 16px;
-        font-size: 0.85rem;
-        box-shadow: none;
-        border: none;
-
-        &:hover {
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-        }
-    }
-
-    .btn-secondary {
-        padding: 6px 16px;
-        font-size: 0.85rem;
+    button.btn-sm {
+        flex-shrink: 0;
+        min-width: 86px;
     }
 }

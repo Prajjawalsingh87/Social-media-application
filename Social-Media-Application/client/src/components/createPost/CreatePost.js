@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Avatar from "../avatar/Avatar";
 import "./CreatePost.scss";
 import { BsCardImage } from "react-icons/bs";
+import { IoClose } from "react-icons/io5";
 import { axiosClient } from "../../utils/axiosClient";
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from "../../redux/slices/postsSlice";
@@ -17,12 +18,15 @@ function CreatePost() {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
+        e.target.value = ""; // allow picking the same file again after removing it
+        if (!file) {
+            return;
+        }
         const fileReader = new FileReader();
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
             if (fileReader.readyState === fileReader.DONE) {
                 setPostImg(fileReader.result);
-                console.log("img data", fileReader.result);
             }
         };
     };
@@ -53,50 +57,57 @@ function CreatePost() {
         }
     }
 
-    return (
-        <div className="CreatePost">
-            <div className="left-part">
-                <Avatar src={myProfile?.avatar?.url} />
-            </div>
-            <div className="right-part">
-                <input
-                    value={caption}
-                    type="text"
-                    className="captionInput"
-                    placeholder="What's on your mind?"
-                    onChange={(e) => setCaption(e.target.value)}
-                />
-                {postImg && (
-                    <div className="img-container">
-                        <img
-                            className="post-img"
-                            src={postImg}
-                            alt="post-img"
-                        />
-                    </div>
-                )}
+    const canPost = caption.trim() && postImg && !posting;
 
-                <div className="bottom-part">
-                    <div className="input-post-img">
-                        <label htmlFor="inputImg" className="labelImg">
-                            <BsCardImage />
-                        </label>
-                        <input
-                            className="inputImg"
-                            id="inputImg"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                        />
-                    </div>
+    return (
+        <div className="CreatePost card">
+            <div className="composer">
+                <Avatar src={myProfile?.avatar?.url} />
+                <textarea
+                    value={caption}
+                    className="caption-input"
+                    placeholder={`What's on your mind${myProfile?.name ? `, ${myProfile.name.split(" ")[0]}` : ""}?`}
+                    rows={2}
+                    onChange={(e) => setCaption(e.target.value)}
+                    aria-label="Post caption"
+                />
+            </div>
+
+            {postImg && (
+                <div className="img-preview">
+                    <img src={postImg} alt="Selected for your post" />
                     <button
-                        className="post-btn btn-primary"
-                        onClick={hanldePostSubmit}
-                        disabled={posting}
+                        type="button"
+                        className="remove-img"
+                        onClick={() => setPostImg("")}
+                        aria-label="Remove image"
+                        title="Remove image"
                     >
-                        {posting ? "Posting..." : "Post"}
+                        <IoClose />
                     </button>
                 </div>
+            )}
+
+            <div className="composer-footer">
+                <label htmlFor="inputImg" className="add-photo">
+                    <BsCardImage className="add-photo-icon" />
+                    <span>{postImg ? "Change photo" : "Photo"}</span>
+                </label>
+                <input
+                    className="inputImg"
+                    id="inputImg"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                />
+                <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={hanldePostSubmit}
+                    disabled={!canPost}
+                >
+                    {posting ? "Posting..." : "Post"}
+                </button>
             </div>
         </div>
     );

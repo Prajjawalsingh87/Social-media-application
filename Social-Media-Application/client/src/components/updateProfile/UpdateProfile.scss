@@ -1,146 +1,101 @@
 .UpdateProfile {
-    padding-bottom: 60px;
-
     .container {
-        display: flex;
-        gap: 40px;
-        padding: 32px;
-        background: var(--glass-bg);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
-        border: 1px solid var(--glass-border);
-        border-radius: var(--radius-xl);
-        box-shadow: var(--shadow-lg);
-        animation: fadeIn 0.6s ease-out;
-        max-width: 980px;
-        margin: 0 auto;
-    }
-
-    .left-part {
-        flex: 1;
+        max-width: 640px;
         display: flex;
         flex-direction: column;
+        gap: 20px;
+    }
+
+    .page-header {
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        p {
+            margin-top: 4px;
+            color: var(--text-muted);
+        }
+    }
+
+    .settings-card {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .photo-row {
+        display: flex;
         align-items: center;
         gap: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
 
-        .input-user-img {
-            .labelImg {
-                width: 140px;
-                height: 140px;
-                border-radius: 50%;
-                border: 4px solid var(--glass-border);
-                padding: 4px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                display: block;
-                overflow: hidden;
-
-                &:hover {
-                    border-color: var(--accent-primary);
-                    box-shadow: 0 0 30px rgba(139, 92, 246, 0.35);
-                    transform: scale(1.05);
-                }
-
-                img {
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 50%;
-                    object-fit: cover;
-                }
-            }
-
-            .inputImg {
-                display: none;
-            }
-        }
-    }
-
-    .right-part {
-        flex: 2;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-
-        .header {
-            h2 {
-                font-size: 1.9rem;
-                margin-bottom: 8px;
-            }
-
-            p {
-                color: var(--text-secondary);
-            }
+        .photo-preview {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            background: var(--bg-subtle);
         }
 
-        form {
+        .photo-actions {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            align-items: flex-start;
+            gap: 8px;
         }
 
-        input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            padding: 14px 20px;
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
+        .inputImg {
+            display: none;
+        }
+
+        .hint {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding-top: 4px;
+    }
+
+    .danger-zone {
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        border-color: var(--danger);
+
+        h2 {
             font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-
-            &::placeholder {
-                color: var(--text-secondary);
-            }
-
-            &:focus {
-                background: rgba(139, 92, 246, 0.05);
-                border-color: var(--accent-primary);
-                box-shadow: 0 0 18px rgba(139, 92, 246, 0.2);
-            }
-        }
-
-        .btn-primary {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .delete-account {
-            width: 100%;
-            margin-top: 10px;
-            background: rgba(217, 70, 126, 0.08);
-            color: var(--accent-secondary);
-            border: 1px solid rgba(217, 70, 126, 0.25);
-            border-radius: var(--radius-md);
-            padding: 12px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            color: var(--danger);
+        }
 
-            &:hover {
-                background: rgba(217, 70, 126, 0.18);
-                color: white;
-                border-color: rgba(217, 70, 126, 0.45);
-            }
+        p {
+            margin-top: 2px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
         }
     }
 }
 
-@media screen and (max-width: 768px) {
-    .UpdateProfile .container {
-        flex-direction: column;
-        padding: 30px 20px;
-    }
-}
+@media (max-width: 520px) {
+    .UpdateProfile {
+        .settings-card {
+            padding: 18px;
+        }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
+        .danger-zone {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 }

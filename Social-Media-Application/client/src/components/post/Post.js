@@ -5,8 +5,7 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useDispatch } from 'react-redux';
 import { likeAndUnlikePost } from "../../redux/slices/postsSlice";
 import { useNavigate } from "react-router";
-import { FiMessageCircle } from "react-icons/fi";
-import { HiOutlineShare } from "react-icons/hi";
+import { FiMessageCircle, FiSend } from "react-icons/fi";
 
 function Post({ post }) {
     const dispatch = useDispatch();
@@ -17,28 +16,58 @@ function Post({ post }) {
         }))
     }
 
+    const likes = post.likesCount || 0;
+    const openOwnerProfile = () => navigate(`/profile/${post.owner?._id}`);
+
     return (
-        <div className="Post">
-            <div className="heading" onClick={() => navigate(`/profile/${post.owner._id}`)}>
-                <Avatar src={post.owner?.avatar?.url} />
-                <h4>{post.owner?.name}</h4>
-            </div>
-            <div className="content">
-                <img src={post?.image?.url} alt="" />
-            </div>
-            <div className="footer">
-                <div className="like" onClick={handlePostLiked}>
-                    {post.isLiked ? <AiFillHeart className="icon liked" /> : <AiOutlineHeart className="icon" />}
-                    <h4>{`${post.likesCount} likes`}</h4>
+        <article className="Post card">
+            <header className="post-header">
+                <button type="button" className="owner" onClick={openOwnerProfile}>
+                    <Avatar src={post.owner?.avatar?.url} />
+                    <span className="owner-info">
+                        <span className="owner-name">{post.owner?.name}</span>
+                        {post?.timeAgo && <span className="time-ago">{post.timeAgo}</span>}
+                    </span>
+                </button>
+            </header>
+
+            {post?.image?.url && (
+                <div className="post-media" onDoubleClick={() => !post.isLiked && handlePostLiked()}>
+                    <img src={post.image.url} alt={post.caption || "Post"} loading="lazy" />
                 </div>
-                <div className="actions">
-                    <FiMessageCircle className="comment-icon" />
-                    <HiOutlineShare className="share-icon" />
+            )}
+
+            <div className="post-body">
+                <div className="post-actions">
+                    <button
+                        type="button"
+                        className={`action ${post.isLiked ? "liked" : ""}`}
+                        onClick={handlePostLiked}
+                        aria-label={post.isLiked ? "Unlike" : "Like"}
+                        aria-pressed={Boolean(post.isLiked)}
+                    >
+                        {post.isLiked ? <AiFillHeart /> : <AiOutlineHeart />}
+                    </button>
+                    <button type="button" className="action" aria-label="Comment" title="Comments (coming soon)">
+                        <FiMessageCircle />
+                    </button>
+                    <button type="button" className="action" aria-label="Share" title="Share (coming soon)">
+                        <FiSend />
+                    </button>
                 </div>
-                <p className="caption">{post.caption}</p>
-                <h6 className="time-ago">{post?.timeAgo}</h6>
+
+                <p className="likes">{`${likes.toLocaleString()} ${likes === 1 ? "like" : "likes"}`}</p>
+
+                {post.caption && (
+                    <p className="caption">
+                        <button type="button" className="caption-owner" onClick={openOwnerProfile}>
+                            {post.owner?.name}
+                        </button>
+                        {post.caption}
+                    </p>
+                )}
             </div>
-        </div>
+        </article>
     );
 }
 

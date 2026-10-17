@@ -2,11 +2,12 @@ import React from "react";
 import userImg from "../../assets/user.png";
 import "./Avatar.scss";
 
-function Avatar({ src }) {
+// size: "sm" (32px) | "md" (40px, default) | "lg" (56px) | "xl" (120px)
+function Avatar({ src, size = "md", alt = "User avatar" }) {
     return (
-        <div className="Avatar">
-            <img src={src ? src : userImg} alt="user avatar" />
-        </div>
+        <span className={`Avatar ${size}`}>
+            <img src={src ? src : userImg} alt={alt} />
+        </span>
     );
 }
 

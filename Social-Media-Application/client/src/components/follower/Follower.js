@@ -25,17 +25,21 @@ function Follower({ user }) {
 
     return (
         <div className="Follower">
-            <div className="user-info" onClick={() => navigate(`/profile/${user._id}`)} >
-                <Avatar src={user?.avatar?.url} />
-                <h4 className="name">{user?.name}</h4>
-            </div>
-
-            <button type="button" onClick={handleUserFollow}
-                className={
-                    isFollowing ? "btn-secondary follow-link" : "btn-primary"
-                }
+            <button
+                type="button"
+                className="user-info"
+                onClick={() => navigate(`/profile/${user._id}`)}
             >
-                {isFollowing ? "Unfollow" : "Follow"}
+                <Avatar src={user?.avatar?.url} size="sm" />
+                <span className="name">{user?.name}</span>
+            </button>
+
+            <button
+                type="button"
+                onClick={handleUserFollow}
+                className={`btn-sm ${isFollowing ? "btn-secondary" : "btn-primary"}`}
+            >
+                {isFollowing ? "Following" : "Follow"}
             </button>
         </div>
     );

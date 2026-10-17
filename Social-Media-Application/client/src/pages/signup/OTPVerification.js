@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { axiosClient } from "../../utils/axiosClient";
 import toast from "react-hot-toast";
-import "./OTPVerification.scss";
+import AuthLayout from "../../components/authLayout/AuthLayout";
 
 function OTPVerification({ email, onVerificationSuccess, onBackToSignup }) {
     const [otp, setOtp] = useState("");
@@ -89,82 +89,81 @@ function OTPVerification({ email, onVerificationSuccess, onBackToSignup }) {
     };
 
     return (
-        <div className="OTPVerification">
-            <div className="otp-box glass">
-                <h2 className="heading">Verify Your Email</h2>
-
-                <div className="email-display">
-                    <p>Verification code sent to:</p>
-                    <p className="email-value">{email}</p>
+        <AuthLayout
+            title="Check your email"
+            subtitle={
+                <>
+                    We sent a 6-digit code to
+                    <br />
+                    <span className="email-chip">{email}</span>
+                </>
+            }
+        >
+            <form onSubmit={handleVerifyOTP}>
+                <div className="form-group">
+                    <label htmlFor="otp">Verification code</label>
+                    <input
+                        type="text"
+                        id="otp"
+                        className="input otp-input"
+                        placeholder="000000"
+                        maxLength="6"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                        disabled={loading}
+                    />
                 </div>
 
-                <form onSubmit={handleVerifyOTP}>
-                    <div className="form-group">
-                        <label htmlFor="otp">Enter OTP</label>
-                        <input
-                            type="text"
-                            id="otp"
-                            className="otp-input"
-                            placeholder="000000"
-                            maxLength="6"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                            disabled={loading}
-                        />
-                        <small className="otp-hint">6-digit code</small>
-                    </div>
-
-                    <div className="timer">
-                        {timeLeft > 0 ? (
-                            <span className={timeLeft < 60 ? "warning" : ""}>
-                                Code expires in: {formatTime(timeLeft)}
-                            </span>
-                        ) : (
-                            <span className="expired">Code has expired</span>
-                        )}
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="submit btn-primary"
-                        disabled={loading || timeLeft === 0}
-                    >
-                        {loading ? "Verifying..." : "Verify"}
-                    </button>
-                </form>
-
-                <div className="resend-section">
-                    <p>Didn't receive the code?</p>
-                    <button
-                        type="button"
-                        className="resend-btn"
-                        onClick={handleResendOTP}
-                        disabled={resendLoading}
-                    >
-                        {resendLoading ? "Sending..." : "Resend OTP"}
-                    </button>
+                <div className="timer">
+                    {timeLeft > 0 ? (
+                        <span className={timeLeft < 60 ? "warning" : ""}>
+                            Code expires in {formatTime(timeLeft)}
+                        </span>
+                    ) : (
+                        <span className="expired">Code has expired. Request a new one below.</span>
+                    )}
                 </div>
 
                 <button
-                    type="button"
-                    className="back-btn"
-                    onClick={onBackToSignup}
+                    type="submit"
+                    className="submit btn-primary btn-block"
+                    disabled={loading || timeLeft === 0}
                 >
-                    ← Back to Signup
+                    {loading ? "Verifying..." : "Verify email"}
                 </button>
+            </form>
 
-                {otpStatus && (
-                    <div className="status-info">
-                        <p>OTP Status: {otpStatus.hasOTP ? "✓ Valid" : "✗ Not sent"}</p>
-                        {otpStatus.expiresAt && (
-                            <p className="expires">
-                                Expires at: {new Date(otpStatus.expiresAt).toLocaleTimeString()}
-                            </p>
-                        )}
-                    </div>
-                )}
+            <div className="resend-row">
+                <span>Didn't receive the code?</span>
+                <button
+                    type="button"
+                    className="link-btn"
+                    onClick={handleResendOTP}
+                    disabled={resendLoading}
+                >
+                    {resendLoading ? "Sending..." : "Resend code"}
+                </button>
             </div>
-        </div>
+
+            <button
+                type="button"
+                className="btn-ghost btn-block back-btn"
+                onClick={onBackToSignup}
+            >
+                ← Back to sign up
+            </button>
+
+            {otpStatus && (
+                <div className="status-info">
+                    <span>Status: {otpStatus.hasOTP ? "Code sent" : "No code sent yet"}</span>
+                    {otpStatus.expiresAt && (
+                        <span>Expires at {new Date(otpStatus.expiresAt).toLocaleTimeString()}</span>
+                    )}
+                </div>
+            )}
+        </AuthLayout>
     );
 }
 

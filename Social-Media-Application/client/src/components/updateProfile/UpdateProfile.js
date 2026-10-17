@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./UpdateProfile.scss";
 import dummyUserImg from "../../assets/user.png";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { updateMyProfile } from "../../redux/slices/appConfigSlice";
 import toast from "react-hot-toast";
 
@@ -12,6 +13,7 @@ function UpdateProfile() {
     const [userImg, setUserImg] = useState("");
     const [saving, setSaving] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         setName(myProfile?.name || '');
@@ -21,12 +23,14 @@ function UpdateProfile() {
 
     function handleImageChange(e) {
         const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
         const fileReader = new FileReader();
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
             if (fileReader.readyState === fileReader.DONE) {
                 setUserImg(fileReader.result)
-                console.log('img data', fileReader.result);
             }
         }
     }
@@ -54,47 +58,76 @@ function UpdateProfile() {
     return (
         <div className="UpdateProfile">
             <div className="container">
-                <div className="left-part">
-                    <div className="input-user-img">
-                        <label htmlFor="inputImg" className="labelImg">
-                            <img src={userImg ? userImg : dummyUserImg} alt={name} />
-                        </label>
-                        <input
-                            className="inputImg"
-                            id="inputImg"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                        />
-                    </div>
+                <div className="page-header">
+                    <h1>Edit profile</h1>
+                    <p>Update your photo, name and bio. Changes are visible to everyone.</p>
                 </div>
-                <div className="right-part">
-                    <div className="header">
-                        <h2>Update your profile</h2>
-                        <p>Refresh your name, bio, and avatar in one place.</p>
+
+                <form className="card settings-card" onSubmit={handleSubmit}>
+                    <div className="photo-row">
+                        <img
+                            className="photo-preview"
+                            src={userImg ? userImg : dummyUserImg}
+                            alt={name || "Profile"}
+                        />
+                        <div className="photo-actions">
+                            <label htmlFor="inputImg" className="btn-secondary btn-sm">
+                                Change photo
+                            </label>
+                            <input
+                                className="inputImg"
+                                id="inputImg"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                            <span className="hint">JPG or PNG, square images look best.</span>
+                        </div>
                     </div>
-                    <form onSubmit={handleSubmit}>
+
+                    <div className="form-group">
+                        <label htmlFor="name">Name</label>
                         <input
+                            id="name"
+                            className="input"
                             value={name}
                             type="text"
-                            placeholder="Your Name"
+                            placeholder="Your name"
                             onChange={(e) => setName(e.target.value)}
                         />
-                        <input
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="bio">Bio</label>
+                        <textarea
+                            id="bio"
+                            className="input"
                             value={bio}
-                            type="text"
-                            placeholder="Your Bio"
+                            rows={3}
+                            placeholder="Tell people a little about yourself"
                             onChange={(e) => setBio(e.target.value)}
                         />
-                        <button type="submit" className="btn-primary" disabled={saving}>
-                            {saving ? "Saving..." : "Save Changes"}
-                        </button>
-                    </form>
+                    </div>
 
-                    <button type="button" className="delete-account">
-                        Delete Account
+                    <div className="form-actions">
+                        <button type="button" className="btn-ghost" onClick={() => navigate(-1)}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="btn-primary" disabled={saving}>
+                            {saving ? "Saving..." : "Save changes"}
+                        </button>
+                    </div>
+                </form>
+
+                <section className="card danger-zone">
+                    <div>
+                        <h2>Delete account</h2>
+                        <p>Permanently remove your account, posts and followers. This cannot be undone.</p>
+                    </div>
+                    <button type="button" className="btn-danger delete-account" title="Coming soon">
+                        Delete account
                     </button>
-                </div>
+                </section>
             </div>
         </div>
     );
