@@ -22,8 +22,8 @@ function OTPVerification({ email, onVerificationSuccess, onBackToSignup }) {
     const checkOTPStatus = useCallback(async () => {
         try {
             const result = await axiosClient.post("/auth/check-otp-status", { email });
-            if (result.data.data) {
-                setOtpStatus(result.data.data);
+            if (result?.status === "ok" && result.result) {
+                setOtpStatus(result.result);
             }
         } catch (error) {
             console.log("Error checking OTP status:", error);
@@ -56,14 +56,12 @@ function OTPVerification({ email, onVerificationSuccess, onBackToSignup }) {
                 otp,
             });
 
-            if (result.data.success) {
-                toast.success("Email verified successfully!");
+            if (result?.status === "ok") {
                 setOtp("");
                 onVerificationSuccess();
             }
         } catch (error) {
-            const errorMsg = error.response?.data?.message || "Failed to verify OTP";
-            toast.error(errorMsg);
+            // Wrong / expired code - the server's message is already shown by axiosClient.
         } finally {
             setLoading(false);
         }
@@ -74,15 +72,14 @@ function OTPVerification({ email, onVerificationSuccess, onBackToSignup }) {
         try {
             const result = await axiosClient.post("/auth/send-otp", { email });
 
-            if (result.data.success) {
-                toast.success("OTP sent to your email");
+            if (result?.status === "ok") {
+                toast.success("A new code was sent to your email");
                 setTimeLeft(300); // Reset timer to 5 minutes
                 setOtp("");
                 checkOTPStatus();
             }
         } catch (error) {
-            const errorMsg = error.response?.data?.message || "Failed to send OTP";
-            toast.error(errorMsg);
+            // Already shown by axiosClient.
         } finally {
             setResendLoading(false);
         }

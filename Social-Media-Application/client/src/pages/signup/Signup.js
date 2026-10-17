@@ -23,25 +23,39 @@ function Signup() {
             return;
         }
 
+        // axiosClient resolves with the response body ({ status: "ok", result }) and,
+        // on failure, has already shown the server's error message as a toast.
         setLoading(true);
+        let accountCreated = false;
         try {
             const result = await axiosClient.post("/auth/signup", {
                 name,
                 email,
                 password,
             });
-
-            if (result.data.success) {
-                toast.success("Account created! Please verify your email.");
-                setSignupEmail(email);
-
-                // Send OTP to email
-                await axiosClient.post("/auth/send-otp", { email });
-                setShowOTPVerification(true);
-            }
+            accountCreated = result?.status === "ok";
         } catch (error) {
-            const errorMsg = error.response?.data?.message || "Signup failed";
-            toast.error(errorMsg);
+            // e.g. "User is already registered" - already shown by axiosClient
+        }
+
+        if (!accountCreated) {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            await axiosClient.post("/auth/send-otp", { email });
+            toast.success("Account created! Enter the code we emailed you.");
+            setSignupEmail(email);
+            setShowOTPVerification(true);
+        } catch (error) {
+            // The account exists even if the verification email could not be sent.
+            navigate("/login", {
+                state: {
+                    email,
+                    message: "Account created. We couldn't send the verification email, but you can log in now.",
+                },
+            });
         } finally {
             setLoading(false);
         }
