@@ -16,10 +16,10 @@ function AuthLayout({ title, subtitle, children, footer }) {
                 <div className="brand-overlay" />
                 <div className="brand-content">
                     <div className="brand">
-                        <span className="brand-mark">S</span>
-                        <span className="brand-name">Skyline Social</span>
+                        <span className="brand-mark">O</span>
+                        <span className="brand-name">Orbit</span>
                     </div>
-                    <h2 className="brand-tagline">Stay close to your people.</h2>
+                    <h2 className="brand-tagline">Keep your people in orbit.</h2>
                     <ul className="brand-highlights">
                         {HIGHLIGHTS.map((item) => (
                             <li key={item}>
@@ -34,8 +34,8 @@ function AuthLayout({ title, subtitle, children, footer }) {
             <main className="form-panel">
                 <div className="form-card">
                     <div className="mobile-brand">
-                        <span className="brand-mark">S</span>
-                        <span className="brand-name">Skyline Social</span>
+                        <span className="brand-mark">O</span>
+                        <span className="brand-name">Orbit</span>
                     </div>
                     <h1 className="form-title">{title}</h1>
                     {subtitle && <p className="form-subtitle">{subtitle}</p>}

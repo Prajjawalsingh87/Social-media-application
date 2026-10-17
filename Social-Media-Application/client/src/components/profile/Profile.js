@@ -7,8 +7,15 @@ import CreatePost from "../createPost/CreatePost";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserProfile } from "../../redux/slices/postsSlice";
 import { followAndUnfollowUser } from "../../redux/slices/feedSlice";
-import { BsCamera } from "react-icons/bs";
+import { BsCamera, BsCalendar3, BsPeople } from "react-icons/bs";
 import { FiEdit2 } from "react-icons/fi";
+
+function joinedLabel(createdAt) {
+    if (!createdAt) return null;
+    const date = new Date(createdAt);
+    if (Number.isNaN(date.getTime())) return null;
+    return `Joined ${date.toLocaleDateString(undefined, { month: "long", year: "numeric" })}`;
+}
 
 function Profile() {
     const navigate = useNavigate();
@@ -77,12 +84,6 @@ function Profile() {
                                 )}
                             </div>
 
-                            {userProfile?.bio ? (
-                                <p className="bio">{userProfile.bio}</p>
-                            ) : (
-                                isMyProfile && <p className="bio muted">Add a short bio so people know who you are.</p>
-                            )}
-
                             <ul className="stats">
                                 {stats.map((stat) => (
                                     <li key={stat.label}>
@@ -95,24 +96,61 @@ function Profile() {
                     </div>
                 </section>
 
-                <section className="profile-posts">
-                    {isMyProfile && <CreatePost />}
+                <div className="profile-body">
+                    <aside className="profile-aside">
+                        <section className="card about-card">
+                            <h2 className="card-title">About</h2>
+                            {userProfile?.bio ? (
+                                <p className="bio">{userProfile.bio}</p>
+                            ) : (
+                                <p className="bio muted">
+                                    {isMyProfile ? "Add a short bio so people know who you are." : "No bio yet."}
+                                </p>
+                            )}
+                            <ul className="facts">
+                                <li>
+                                    <BsPeople className="fact-icon" />
+                                    Followed by {(userProfile?.followers?.length || 0).toLocaleString()}{" "}
+                                    {userProfile?.followers?.length === 1 ? "person" : "people"}
+                                </li>
+                                {joinedLabel(userProfile?.createdAt) && (
+                                    <li>
+                                        <BsCalendar3 className="fact-icon" />
+                                        {joinedLabel(userProfile?.createdAt)}
+                                    </li>
+                                )}
+                            </ul>
+                            {isMyProfile && !userProfile?.bio && (
+                                <button
+                                    type="button"
+                                    className="btn-secondary btn-sm btn-block"
+                                    onClick={() => navigate("/updateProfile")}
+                                >
+                                    Add bio
+                                </button>
+                            )}
+                        </section>
+                    </aside>
 
-                    <h2 className="posts-title">Posts</h2>
-                    {posts.length > 0 ? (
-                        posts.map((post) => <Post key={post._id} post={post} />)
-                    ) : (
-                        <div className="card empty-state">
-                            <BsCamera className="empty-icon" />
-                            <h3>No posts yet</h3>
-                            <p>
-                                {isMyProfile
-                                    ? "Share your first photo using the box above."
-                                    : "When they share photos, they'll appear here."}
-                            </p>
-                        </div>
-                    )}
-                </section>
+                    <section className="profile-posts">
+                        {isMyProfile && <CreatePost />}
+
+                        <h2 className="posts-title">Posts</h2>
+                        {posts.length > 0 ? (
+                            posts.map((post) => <Post key={post._id} post={post} />)
+                        ) : (
+                            <div className="card empty-state">
+                                <BsCamera className="empty-icon" />
+                                <h3>No posts yet</h3>
+                                <p>
+                                    {isMyProfile
+                                        ? "Share your first photo using the box above."
+                                        : "When they share photos, they'll appear here."}
+                                </p>
+                            </div>
+                        )}
+                    </section>
+                </div>
             </div>
         </div>
     );

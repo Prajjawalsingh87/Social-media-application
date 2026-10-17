@@ -44,8 +44,9 @@ function UpdateProfile() {
             userImg
         }))
             .unwrap()
-            .then(() => {
+            .then((result) => {
                 toast.success("Profile updated successfully");
+                navigate(`/profile/${result?.user?._id || myProfile?._id}`);
             })
             .catch(() => {
                 toast.error("Unable to update profile");

@@ -36,13 +36,13 @@ function Navbar() {
         <header className="Navbar">
             <div className="navbar-inner">
                 <button type="button" className="brand" onClick={() => navigate("/")}>
-                    <span className="brand-mark">S</span>
-                    <span className="brand-name">Skyline Social</span>
+                    <span className="brand-mark">O</span>
+                    <span className="brand-name">Orbit</span>
                 </button>
 
                 <label className="search-bar">
                     <AiOutlineSearch className="search-icon" aria-hidden="true" />
-                    <input type="search" placeholder="Search Skyline" aria-label="Search" />
+                    <input type="search" placeholder="Search Orbit" aria-label="Search" />
                 </label>
 
                 <nav className="actions" aria-label="Main">
