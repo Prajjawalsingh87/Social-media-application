@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { axiosClient } from "../../utils/axiosClient";
 import toast from "react-hot-toast";
 import OTPVerification from "./OTPVerification";
-import "./Signup.scss";
+import AuthLayout from "../../components/authLayout/AuthLayout";
+import PasswordInput from "../../components/passwordInput/PasswordInput";
 
 function Signup() {
     const navigate = useNavigate();
@@ -33,7 +34,7 @@ function Signup() {
             if (result.data.success) {
                 toast.success("Account created! Please verify your email.");
                 setSignupEmail(email);
-                
+
                 // Send OTP to email
                 await axiosClient.post("/auth/send-otp", { email });
                 setShowOTPVerification(true);
@@ -75,63 +76,61 @@ function Signup() {
     }
 
     return (
-        <div className="Signup">
-            <div className="signup-box glass">
-                <h2 className="heading">Signup</h2>
-                <p className="subtext">Create your account and start sharing moments with your circle.</p>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="name">Name</label>
-                        <input
-                            type="text"
-                            className="name"
-                            id="name"
-                            placeholder="Enter your name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            disabled={loading}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            className="email"
-                            id="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            disabled={loading}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            className="password"
-                            id="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            disabled={loading}
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="submit btn-primary"
+        <AuthLayout
+            title="Create your account"
+            subtitle="It only takes a minute. We'll send a code to verify your email."
+            footer={<>Already have an account? <Link to="/login">Log in</Link></>}
+        >
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="name">Full name</label>
+                    <input
+                        type="text"
+                        className="input"
+                        id="name"
+                        placeholder="Jane Doe"
+                        autoComplete="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         disabled={loading}
-                    >
-                        {loading ? "Creating Account..." : "Signup"}
-                    </button>
-                </form>
-                <p className="subheading">
-                    Already have an account? <Link to="/login">Log In</Link>
-                </p>
-            </div>
-        </div>
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        className="input"
+                        id="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={loading}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <PasswordInput
+                        id="password"
+                        placeholder="Create a password"
+                        autoComplete="new-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={loading}
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className="submit btn-primary btn-block"
+                    disabled={loading}
+                >
+                    {loading ? "Creating account..." : "Create account"}
+                </button>
+            </form>
+        </AuthLayout>
     );
 }
 

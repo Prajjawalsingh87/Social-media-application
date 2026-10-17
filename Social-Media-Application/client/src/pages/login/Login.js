@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "./Login.scss";
 import { axiosClient } from "../../utils/axiosClient";
 import { KEY_ACCESS_TOKEN, setItem } from "../../utils/localStorageManager";
 import toast from "react-hot-toast";
+import AuthLayout from "../../components/authLayout/AuthLayout";
+import PasswordInput from "../../components/passwordInput/PasswordInput";
 
 
 function Login() {
@@ -38,42 +39,39 @@ function Login() {
     }
 
     return (
-        <div className="Login">
-            <div className="login-box glass">
-                <h2 className="heading">Login</h2>
-                <p className="subtext">Welcome back. Jump into your feed and continue where you left off.</p>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            className="email"
-                            id="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
+        <AuthLayout
+            title="Welcome back"
+            subtitle="Log in to see what your friends are sharing."
+            footer={<>Don't have an account? <Link to="/signup">Sign up</Link></>}
+        >
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        className="input"
+                        id="email"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
 
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            className="password"
-                            id="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
+                <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <PasswordInput
+                        id="password"
+                        placeholder="Enter your password"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
 
-                    <button type="submit" className="submit btn-primary">Login</button>
-                </form>
-                <p className="subheading">
-                    Do not have an account? <Link to="/signup">Sign Up</Link>
-                </p>
-            </div>
-        </div>
+                <button type="submit" className="submit btn-primary btn-block">Log in</button>
+            </form>
+        </AuthLayout>
     );
 }
 

@@ -1,0 +1,264 @@
+.AuthLayout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    background: var(--bg-surface);
+
+    /* ---------- Left: brand panel ---------- */
+    .brand-panel {
+        position: relative;
+        background: url("../../assets/background.jpeg") center / cover no-repeat;
+        display: flex;
+        align-items: flex-end;
+        padding: 48px;
+        overflow: hidden;
+    }
+
+    .brand-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(160deg, rgba(49, 46, 129, 0.82) 0%, rgba(17, 24, 39, 0.9) 100%);
+    }
+
+    .brand-content {
+        position: relative;
+        max-width: 440px;
+        color: #ffffff;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 40px;
+    }
+
+    .brand-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-md);
+        background: var(--accent);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.125rem;
+        display: grid;
+        place-items: center;
+    }
+
+    .brand-name {
+        font-size: 1.125rem;
+        font-weight: 700;
+    }
+
+    .brand-panel .brand-name {
+        color: #ffffff;
+    }
+
+    .brand-tagline {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #ffffff;
+        margin-bottom: 20px;
+    }
+
+    .brand-highlights {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9375rem;
+        }
+
+        .check {
+            flex-shrink: 0;
+            font-size: 1.125rem;
+            color: #a5b4fc;
+        }
+    }
+
+    /* ---------- Right: form panel ---------- */
+    .form-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+    }
+
+    .form-card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .mobile-brand {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 32px;
+
+        .brand-name {
+            color: var(--text-primary);
+        }
+    }
+
+    .form-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    .form-subtitle {
+        margin-top: 6px;
+        color: var(--text-muted);
+        font-size: 0.9375rem;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 28px;
+    }
+
+    .password-field {
+        position: relative;
+
+        .input {
+            padding-right: 44px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            background: none;
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            cursor: pointer;
+
+            &:hover {
+                color: var(--text-primary);
+            }
+        }
+    }
+
+    .submit {
+        margin-top: 8px;
+        height: 44px;
+    }
+
+    .form-footer {
+        margin-top: 24px;
+        text-align: center;
+        font-size: 0.9375rem;
+        color: var(--text-muted);
+    }
+
+    /* ---------- OTP specifics ---------- */
+    .email-chip {
+        display: inline-block;
+        margin-top: 4px;
+        font-weight: 600;
+        color: var(--text-primary);
+        overflow-wrap: anywhere;
+    }
+
+    .otp-input {
+        height: 56px;
+        text-align: center;
+        font-size: 1.75rem;
+        font-weight: 600;
+        letter-spacing: 0.5em;
+        padding-left: 0.5em;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .timer {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        text-align: center;
+
+        .warning {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .expired {
+            color: var(--danger);
+            font-weight: 600;
+        }
+    }
+
+    .resend-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 20px;
+        font-size: 0.875rem;
+        color: var(--text-muted);
+    }
+
+    .link-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font-weight: 600;
+        color: var(--accent);
+        cursor: pointer;
+
+        &:hover:not(:disabled) {
+            text-decoration: underline;
+        }
+    }
+
+    .back-btn {
+        margin-top: 12px;
+    }
+
+    .status-info {
+        margin-top: 20px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
+        background: var(--bg-subtle);
+        border: 1px solid var(--border);
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 900px) {
+    .AuthLayout {
+        grid-template-columns: 1fr;
+
+        .brand-panel {
+            display: none;
+        }
+
+        .mobile-brand {
+            display: flex;
+        }
+
+        .form-panel {
+            align-items: flex-start;
+            padding-top: 64px;
+        }
+    }
+}

@@ -11,9 +11,6 @@ import { useEffect, useRef } from "react";
 import LoadingBar from "react-top-loading-bar";
 import OnlyIfNotLoggedIn from "./components/OnlyIfNotLoggedIn";
 import toast, { Toaster } from "react-hot-toast";
-import { getItem } from "./utils/localStorageManager";
-
-const KEY_THEME_MODE = "theme_mode";
 
 export const TOAST_SUCCESS = "toast_success";
 export const TOAST_FAILURE = "toast_failure";
@@ -22,11 +19,6 @@ function App() {
     const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
     const toastData = useSelector((state) => state.appConfigReducer.toastData);
     const loadingRef = useRef(null);
-
-    useEffect(() => {
-        const savedTheme = getItem(KEY_THEME_MODE) || "dark";
-        document.body.dataset.theme = savedTheme;
-    }, []);
 
     useEffect(() => {
         if (isLoading) {
@@ -51,10 +43,19 @@ function App() {
 
     return (
         <div className="App">
-            <LoadingBar color="#6366f1" ref={loadingRef} />
-            <div>
-                <Toaster />
-            </div>
+            <LoadingBar color="#4f46e5" height={3} ref={loadingRef} />
+            <Toaster
+                position="top-center"
+                toastOptions={{
+                    style: {
+                        background: "var(--bg-surface)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border)",
+                        boxShadow: "var(--shadow-md)",
+                        fontSize: "0.9375rem",
+                    },
+                }}
+            />
             <Routes>
                 <Route element={<RequireUser />}>
                     <Route element={<Home />}>
