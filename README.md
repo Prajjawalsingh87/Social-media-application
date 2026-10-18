@@ -1,15 +1,15 @@
-# ✨ Skyline ✨
+# ✨ Orbit ✨
 
 ### *your feed, your vibe* 🌆
 
-[![Live Demo](https://img.shields.io/badge/🔥_CHECK_IT_LIVE-8b5cf6?style=for-the-badge)](https://social-media-application-xgbd-mvbv71fu.vercel.app)
+[![Live Demo](https://img.shields.io/badge/🔥_CHECK_IT_LIVE-8b5cf6?style=for-the-badge)](https://social-media-application-7gjn.vercel.app)
 [![GitHub](https://img.shields.io/badge/⭐_STAR_THIS-000?style=for-the-badge&logo=github)](https://github.com/Prajjawalsingh87/Social-media-application)
 
 ---
 
-## 🎯 what is skyline?
+## 🎯 what is Orbit?
 
-skyline is a **next-gen social media app** where you share your moments, connect with your people, and vibe with content that matters 💜
+Orbit is a **next-gen social media app** where you share your moments, connect with your people, and vibe with content that matters 💜
 
 think instagram meets twitter, but with that **clean dark mode aesthetic** everyone loves 🌙
 
@@ -19,7 +19,7 @@ think instagram meets twitter, but with that **clean dark mode aesthetic** every
 
 | | |
 |---|---|
-| 📱 **app** | [**skyline.vercel.app**](https://social-media-application-xgbd-mvbv71fu.vercel.app) |
+| 📱 **app** | [**social-media-application-7gjn.vercel.app**](https://social-media-application-7gjn.vercel.app) |
 | 🔌 **api** | [social-media-application-eta.vercel.app](https://social-media-application-eta.vercel.app) |
 
 ---
@@ -28,12 +28,12 @@ think instagram meets twitter, but with that **clean dark mode aesthetic** every
 
 | | |
 |---|---|
-| � | **post your pics** - share moments with captions |
+| 📸 | **post your pics** - share moments with captions |
 | ❤️ | **double tap to like** - with satisfying heart animation |
 | 👥 | **follow the gang** - build your feed, your way |
-| � | **find your people** - search for anyone |
+| 🔍 | **find your people** - search for anyone |
 | 👤 | **flex your profile** - show off your grid |
-| � | **secure login** - your data stays safe fr fr |
+| 🔒 | **secure login** - your data stays safe fr fr |
 
 ---
 
