@@ -18,7 +18,8 @@ function NotificationBell() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const { unreadCount, items, status, error } = useSelector((state) => state.notificationsReducer);
+    const unreadCount = useSelector((state) => state.notificationsReducer.unreadCount);
+    const { items, status, error } = useSelector((state) => state.notificationsReducer.preview);
     const [open, setOpen] = useState(false);
     const rootRef = useRef(null);
 
@@ -39,7 +40,7 @@ function NotificationBell() {
     }, [dispatch]);
 
     useEffect(() => {
-        if (open) dispatch(fetchNotifications({ limit: 8 }));
+        if (open) dispatch(fetchNotifications({ target: "preview", limit: 8 }));
     }, [open, dispatch]);
 
     // Close on route change, outside click and Escape.

@@ -6,7 +6,9 @@ import { ensureSearchIndexes } from "./utils/searchIndexes.js";
 //   function instance reuse it instead of reconnecting.
 // - Every request awaits it (see the middleware in index.js) rather than relying on a
 //   connect that started at boot and may have been frozen with the instance.
-// - A failed attempt is forgotten so the next request retries; it never exits the process.
+// - A failed first attempt is forgotten so the next request retries; it never exits the
+//   process. After a later connection loss the existing client reconnects by itself, so
+//   we keep it rather than opening a competing one.
 const cache = globalThis.__orbitMongo || (globalThis.__orbitMongo = { promise: null });
 
 const CONNECT_OPTIONS = {
@@ -20,9 +22,6 @@ const CONNECT_OPTIONS = {
 };
 
 export default function dbConnect() {
-    if (mongoose.connection.readyState === 1 && cache.promise) {
-        return cache.promise;
-    }
     if (cache.promise) {
         return cache.promise;
     }
@@ -48,12 +47,4 @@ export default function dbConnect() {
         });
 
     return cache.promise;
-}
-
-// If the driver drops the connection later, start fresh on the next request.
-if (!cache.listening) {
-    cache.listening = true;
-    mongoose.connection.on("disconnected", () => {
-        cache.promise = null;
-    });
 }

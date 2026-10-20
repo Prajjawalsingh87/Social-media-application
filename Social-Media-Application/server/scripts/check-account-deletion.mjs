@@ -60,10 +60,13 @@ const notifications = (u) => ok("GET", "/api/notifications", { token: u.token, q
 const users = [];
 try {
     console.log(`API ${BASE}, run ${RUN}`);
+    // Register each account as soon as it exists so a failed setup still cleans up.
     const A = await makeUser("a");
+    users.push(A);
     const B = await makeUser("b");
+    users.push(B);
     const C = await makeUser("c");
-    users.push(A, B, C);
+    users.push(C);
 
     const p1 = await post(C, `p1 ${RUN}`);
     const p3 = await post(C, `p3 ${RUN}`);

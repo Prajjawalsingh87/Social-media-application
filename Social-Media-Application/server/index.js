@@ -13,11 +13,13 @@ import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
-// A stray promise rejection or exception must not take the whole function down.
+// A stray promise rejection (e.g. a fire-and-forget DB call) must not crash the function:
+// log it instead of Node's default of exiting. Genuine uncaught exceptions are only logged
+// here and still terminate the process, since its state can no longer be trusted.
 process.on("unhandledRejection", (reason) => {
     console.log("Unhandled rejection:", reason instanceof Error ? reason.message : reason);
 });
-process.on("uncaughtException", (err) => {
+process.on("uncaughtExceptionMonitor", (err) => {
     console.log("Uncaught exception:", err.message);
 });
 
@@ -70,10 +72,12 @@ app.use("/api", apiRouter);
 // connecting; give the shared connection attempt a few seconds before answering.
 app.get("/health", async (req, res) => {
     if (mongoose.connection.readyState !== 1) {
+        let timer;
         await Promise.race([
             dbConnect().catch(() => {}),
-            new Promise((resolve) => setTimeout(resolve, 9000)),
+            new Promise((resolve) => { timer = setTimeout(resolve, 9000); }),
         ]);
+        clearTimeout(timer);
     }
     const ready = mongoose.connection.readyState === 1;
     res.status(ready ? 200 : 503).json({ status: ready ? "ok" : "unavailable", database: ready ? "connected" : "disconnected" });

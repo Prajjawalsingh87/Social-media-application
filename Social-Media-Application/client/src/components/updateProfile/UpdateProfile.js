@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./UpdateProfile.scss";
 import dummyUserImg from "../../assets/user.png";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,6 +13,8 @@ function UpdateProfile() {
     const [bio, setBio] = useState("");
     const [userImg, setUserImg] = useState("");
     const [saving, setSaving] = useState(false);
+    const [processing, setProcessing] = useState(false);
+    const selectionRef = useRef(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -28,21 +30,30 @@ function UpdateProfile() {
         if (!file) {
             return;
         }
+        // Only the latest selection may update the preview (an earlier one can finish later).
+        const selection = ++selectionRef.current;
+        const isLatest = () => selection === selectionRef.current;
+        setProcessing(true);
         try {
             // Avatars are shown small: 800 px is plenty.
             const result = await compressImage(file, { maxEdge: 800 });
+            if (!isLatest()) return;
             if (result.finalSize > MAX_UPLOAD_BYTES) {
                 toast.error("Choose an image smaller than 5 MB.");
                 return;
             }
-            setUserImg(await readAsDataURL(result.blob));
+            const dataUrl = await readAsDataURL(result.blob);
+            if (isLatest()) setUserImg(dataUrl);
         } catch (err) {
-            toast.error(err.message || "Could not read this image. Try another file.");
+            if (isLatest()) toast.error(err.message || "Could not read this image. Try another file.");
+        } finally {
+            if (isLatest()) setProcessing(false);
         }
     }
 
     function handleSubmit(e) {
         e.preventDefault();
+        if (processing) return; // wait until the new photo is ready
         setSaving(true);
         dispatch(updateMyProfile({
             name,
@@ -120,8 +131,8 @@ function UpdateProfile() {
                         <button type="button" className="btn-ghost" onClick={() => navigate(-1)}>
                             Cancel
                         </button>
-                        <button type="submit" className="btn-primary" disabled={saving}>
-                            {saving ? "Saving..." : "Save changes"}
+                        <button type="submit" className="btn-primary" disabled={saving || processing}>
+                            {saving ? "Saving..." : processing ? "Preparing photo..." : "Save changes"}
                         </button>
                     </div>
                 </form>

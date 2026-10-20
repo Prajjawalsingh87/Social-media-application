@@ -59,18 +59,24 @@ const feedSlice = createSlice({
     initialState: {
         feedData: {},
         loaded: false,
+        feedError: null,
         loadingMore: false,
         loadMoreError: null,
     },
     extraReducers: (builder) => {
         builder
+            .addCase(getFeedData.pending, (state) => {
+                state.feedError = null;
+            })
             .addCase(getFeedData.fulfilled, (state, action) => {
                 state.feedData = action.payload;
                 state.loaded = true;
+                state.feedError = null;
                 state.loadMoreError = null;
             })
             .addCase(getFeedData.rejected, (state) => {
                 state.loaded = true;
+                state.feedError = "Could not load your feed.";
             })
             .addCase(loadMoreFeed.pending, (state) => {
                 state.loadingMore = true;

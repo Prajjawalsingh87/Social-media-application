@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Avatar from "../avatar/Avatar";
 import "./CreatePost.scss";
 import { BsCardImage } from "react-icons/bs";
@@ -22,6 +22,8 @@ function CreatePost() {
     const [posting, setPosting] = useState(false);
     const [processing, setProcessing] = useState(false);
     const [imgInfo, setImgInfo] = useState(null);
+    // Only the latest photo selection may update state (an earlier one can finish later).
+    const selectionRef = useRef(0);
     const dispatch = useDispatch();
     const myProfile = useSelector(state => state.appConfigReducer.myProfile);
 
@@ -35,24 +37,31 @@ function CreatePost() {
             toast.error("Choose a JPEG, PNG, WebP, or GIF image.");
             return;
         }
+        const selection = ++selectionRef.current;
+        const isLatest = () => selection === selectionRef.current;
         setProcessing(true);
         try {
             const result = await compressImage(file);
+            if (!isLatest()) return;
             // The 5 MB limit applies to what is actually uploaded.
             if (result.finalSize > MAX_UPLOAD_BYTES) {
                 toast.error("Choose an image smaller than 5 MB.");
                 return;
             }
-            setPostImg(await readAsDataURL(result.blob));
+            const dataUrl = await readAsDataURL(result.blob);
+            if (!isLatest()) return;
+            setPostImg(dataUrl);
             setImgInfo(result);
         } catch (err) {
-            toast.error(err.message || "Could not read this image. Try another file.");
+            if (isLatest()) toast.error(err.message || "Could not read this image. Try another file.");
         } finally {
-            setProcessing(false);
+            if (isLatest()) setProcessing(false);
         }
     };
 
     const removeImage = () => {
+        selectionRef.current += 1; // drop any conversion still running
+        setProcessing(false);
         setPostImg("");
         setImgInfo(null);
     };

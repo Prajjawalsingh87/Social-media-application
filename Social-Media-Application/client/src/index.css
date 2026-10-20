@@ -341,3 +341,5 @@ textarea.input {
 mark { background: rgba(250, 204, 21, 0.35); color: inherit; border-radius: 3px; padding: 0 1px; }
 body[data-theme='dark'] mark { background: rgba(250, 204, 21, 0.28); color: #fff7d6; }
 a.hashtag { font-weight: 600; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }

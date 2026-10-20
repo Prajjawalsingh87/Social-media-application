@@ -11,12 +11,13 @@ import "../../components/notifications/Notifications.scss";
 
 function Notifications() {
     const dispatch = useDispatch();
-    const { items, nextCursor, status, loadingMore, error, unreadCount } = useSelector(
-        (state) => state.notificationsReducer
+    const unreadCount = useSelector((state) => state.notificationsReducer.unreadCount);
+    const { items, nextCursor, status, loadingMore, error } = useSelector(
+        (state) => state.notificationsReducer.page
     );
 
     useEffect(() => {
-        dispatch(fetchNotifications({ limit: 20 }));
+        dispatch(fetchNotifications({ target: "page", limit: 20 }));
     }, [dispatch]);
 
     return (
@@ -38,7 +39,7 @@ function Notifications() {
                         <BsExclamationCircle className="empty-icon" />
                         <h3>Couldn’t load notifications</h3>
                         <p>{error}</p>
-                        <button type="button" className="btn-secondary btn-sm retry" onClick={() => dispatch(fetchNotifications({ limit: 20 }))}>
+                        <button type="button" className="btn-secondary btn-sm retry" onClick={() => dispatch(fetchNotifications({ target: "page", limit: 20 }))}>
                             Try again
                         </button>
                     </div>
@@ -65,7 +66,7 @@ function Notifications() {
                         type="button"
                         className="btn-secondary load-more"
                         disabled={loadingMore}
-                        onClick={() => dispatch(fetchNotifications({ cursor: nextCursor, limit: 20 }))}
+                        onClick={() => dispatch(fetchNotifications({ target: "page", cursor: nextCursor, limit: 20 }))}
                     >
                         {loadingMore ? "Loading…" : "Show older"}
                     </button>

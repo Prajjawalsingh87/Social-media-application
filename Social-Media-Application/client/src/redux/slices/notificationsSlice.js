@@ -9,10 +9,12 @@ export const fetchUnreadCount = createAsyncThunk("notifications/unreadCount", as
     return response.result.unreadCount;
 });
 
+// target "preview" feeds the bell dropdown, "page" the /notifications list; they are kept
+// apart so opening the bell never truncates a list the page has paged through.
 // cursor = null loads the first page (replacing the list); otherwise appends the next page.
 export const fetchNotifications = createAsyncThunk(
     "notifications/list",
-    async ({ cursor = null, limit = 15 } = {}, { rejectWithValue }) => {
+    async ({ target = "page", cursor = null, limit = 15 } = {}, { rejectWithValue }) => {
         try {
             const response = await axiosClient.get("/api/notifications", {
                 ...quiet,
@@ -35,15 +37,19 @@ export const markAllNotificationsRead = createAsyncThunk("notifications/markAllR
     return 0;
 });
 
+const emptyList = { items: [], nextCursor: null, status: "idle", loadingMore: false, error: null, requestId: null };
+
+function markItemRead(list, id) {
+    const item = list.items.find((n) => n._id === id);
+    if (item) item.read = true;
+}
+
 const notificationsSlice = createSlice({
     name: "notificationsSlice",
     initialState: {
         unreadCount: 0,
-        items: [],
-        nextCursor: null,
-        status: "idle", // idle | loading | succeeded | failed
-        loadingMore: false,
-        error: null,
+        preview: emptyList, // bell dropdown
+        page: emptyList, // /notifications
     },
     extraReducers: (builder) => {
         builder
@@ -51,40 +57,55 @@ const notificationsSlice = createSlice({
                 state.unreadCount = action.payload;
             })
             .addCase(fetchNotifications.pending, (state, action) => {
-                if (action.meta.arg?.cursor) state.loadingMore = true;
-                else if (!state.items.length) state.status = "loading";
-                state.error = null;
+                const { target = "page", cursor } = action.meta.arg || {};
+                const list = state[target];
+                list.error = null;
+                if (cursor) {
+                    list.loadingMore = true;
+                } else {
+                    // A newer first-page request wins over any request still running.
+                    list.requestId = action.meta.requestId;
+                    if (!list.items.length) list.status = "loading";
+                }
             })
             .addCase(fetchNotifications.fulfilled, (state, action) => {
+                const { target = "page", cursor } = action.meta.arg || {};
+                const list = state[target];
                 const { items, nextCursor, unreadCount } = action.payload;
-                if (action.meta.arg?.cursor) {
-                    const seen = new Set(state.items.map((n) => n._id));
-                    state.items.push(...items.filter((n) => !seen.has(n._id)));
-                } else {
-                    state.items = items;
-                }
-                state.nextCursor = nextCursor;
                 state.unreadCount = unreadCount;
-                state.status = "succeeded";
-                state.loadingMore = false;
+                if (cursor) {
+                    list.loadingMore = false;
+                    // Ignore a page that no longer follows the list (it was reloaded meanwhile).
+                    if (cursor !== list.nextCursor) return;
+                    const seen = new Set(list.items.map((n) => n._id));
+                    list.items.push(...items.filter((n) => !seen.has(n._id)));
+                } else {
+                    if (action.meta.requestId !== list.requestId) return;
+                    list.items = items;
+                }
+                list.nextCursor = nextCursor;
+                list.status = "succeeded";
             })
             .addCase(fetchNotifications.rejected, (state, action) => {
-                state.loadingMore = false;
-                state.error = action.payload || "Could not load notifications";
-                if (!state.items.length) state.status = "failed";
+                const { target = "page", cursor } = action.meta.arg || {};
+                const list = state[target];
+                if (cursor) list.loadingMore = false;
+                else if (action.meta.requestId !== list.requestId) return;
+                list.error = action.payload || "Could not load notifications";
+                if (!list.items.length) list.status = "failed";
             })
             .addCase(markNotificationRead.pending, (state, action) => {
-                const item = state.items.find((n) => n._id === action.meta.arg);
-                if (item && !item.read) {
-                    item.read = true;
-                    state.unreadCount = Math.max(0, state.unreadCount - 1);
-                }
+                const id = action.meta.arg;
+                const wasUnread = [...state.preview.items, ...state.page.items].some((n) => n._id === id && !n.read);
+                markItemRead(state.preview, id);
+                markItemRead(state.page, id);
+                if (wasUnread) state.unreadCount = Math.max(0, state.unreadCount - 1);
             })
             .addCase(markNotificationRead.fulfilled, (state, action) => {
                 state.unreadCount = action.payload;
             })
             .addCase(markAllNotificationsRead.pending, (state) => {
-                state.items.forEach((n) => { n.read = true; });
+                [...state.preview.items, ...state.page.items].forEach((n) => { n.read = true; });
                 state.unreadCount = 0;
             });
     },

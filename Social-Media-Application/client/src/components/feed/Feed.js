@@ -16,7 +16,7 @@ function Feed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const feedData = useSelector(state => state.feedDataReducer.feedData)
-  const { loaded, loadingMore, loadMoreError } = useSelector(state => state.feedDataReducer);
+  const { loaded, feedError, loadingMore, loadMoreError } = useSelector(state => state.feedDataReducer);
   const sentinelRef = useRef(null);
   const myProfile = useSelector(state => state.appConfigReducer.myProfile);
 
@@ -99,14 +99,28 @@ function Feed() {
         <main className="feed-main">
           {!loaded && posts.length === 0 ? (
             <>
+              <p className="sr-only" role="status">Loading posts…</p>
               <PostSkeleton />
               <PostSkeleton />
             </>
+          ) : feedError && posts.length === 0 ? (
+            <div className="card empty-state" role="alert">
+              <h3>{feedError}</h3>
+              <p>Check your connection and try again.</p>
+              <button type="button" className="btn-secondary btn-sm feed-retry" onClick={() => dispatch(getFeedData())}>
+                Try again
+              </button>
+            </div>
           ) : posts.length > 0 ? (
             <>
               {posts.map(post => <Post key={post._id} post={post} />)}
               <div ref={sentinelRef} className="feed-sentinel" aria-hidden="true" />
-              {loadingMore && <PostSkeleton />}
+              {loadingMore && (
+                <>
+                  <p className="sr-only" role="status">Loading more posts…</p>
+                  <PostSkeleton />
+                </>
+              )}
               {loadMoreError && (
                 <div className="feed-end" role="alert">
                   <p>{loadMoreError}</p>
