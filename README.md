@@ -1,132 +1,74 @@
-# ✨ Orbit ✨
+# Orbit — Social media application
 
-### *your feed, your vibe* 🌆
+React and Redux frontend with an Express/MongoDB backend. Create an account using
+email OTP, publish image posts, follow people and browse a personalized feed.
 
-[![Live Demo](https://img.shields.io/badge/🔥_CHECK_IT_LIVE-8b5cf6?style=for-the-badge)](https://social-media-application-7gjn.vercel.app)
-[![GitHub](https://img.shields.io/badge/⭐_STAR_THIS-000?style=for-the-badge&logo=github)](https://github.com/Prajjawalsingh87/Social-media-application)
+- Frontend: https://social-media-application-7gjn.vercel.app
+- API: https://social-media-application-eta.vercel.app
 
----
+## Features
 
-## 🎯 what is Orbit?
+Posts, likes, follows, profile editing, account signup/login and OTP verification.
+The responsive UI supports light and dark themes with consistent indigo accents.
+The post composer accepts JPEG, PNG, WebP and GIF images up to 5 MB, reports
+file-read failures, and shows a 2,200-character caption limit. These frontend
+checks improve feedback; backend validation remains the server's responsibility.
 
-Orbit is a **next-gen social media app** where you share your moments, connect with your people, and vibe with content that matters 💜
-
-think instagram meets twitter, but with that **clean dark mode aesthetic** everyone loves 🌙
-
----
-
-## 🚀 try it now
-
-| | |
-|---|---|
-| 📱 **app** | [**social-media-application-7gjn.vercel.app**](https://social-media-application-7gjn.vercel.app) |
-| 🔌 **api** | [social-media-application-eta.vercel.app](https://social-media-application-eta.vercel.app) |
-
----
-
-## ⚡ features that slap
-
-| | |
-|---|---|
-| 📸 | **post your pics** - share moments with captions |
-| ❤️ | **double tap to like** - with satisfying heart animation |
-| 👥 | **follow the gang** - build your feed, your way |
-| 🔍 | **find your people** - search for anyone |
-| 👤 | **flex your profile** - show off your grid |
-| 🔒 | **secure login** - your data stays safe fr fr |
-
----
-
-## 🎨 the aesthetic
-
-```
-✦ glassmorphism cards
-✦ purple & pink gradient vibes  
-✦ floating orb animations
-✦ dark mode (only option, we don't do basic)
-✦ smooth transitions everywhere
-```
-
----
-
-## 🛠️ built with
-
-**frontend**
-```
-react ⚛️ + redux 🔄 + scss 💅
-```
-
-**backend**
-```
-node.js 💚 + express 🚂 + mongodb 🍃
-```
-
-**deployment**
-```
-vercel ▲ + cloudinary ☁️
-```
-
----
-
-## Run locally
-
-From the repo root:
+## Local setup
 
 ```bash
-npm install
 npm run install-all
+cp Social-Media-Application/server/.env.example Social-Media-Application/server/.env
+cp Social-Media-Application/client/.env.example Social-Media-Application/client/.env
+# Fill in the values below, then:
 npm run dev
 ```
 
-If you prefer to start each part manually:
+The client runs on port 3000; the API defaults to port 4001.
+Set `REACT_APP_API_URL=http://localhost:4001` in the client environment.
 
-```bash
-cd Social-Media-Application/server
-npm install
-npm start
-```
+The server uses these exact environment names (see its `.env.example`):
+
+| Variable | Purpose |
+|---|---|
+| `MONGODB_URI` | MongoDB connection string |
+| `ACCESS_TOKEN_PRIVATE_KEY` | Access-token signing secret |
+| `REFRESH_TOKEN_PRIVATE_KEY` | Refresh-token signing secret |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary account name |
+| `CLOUDINARY_API_KEY` | Image service API key |
+| `CLOUDINARY_API_SECRET` | Image service secret |
+| `EMAIL_SERVICE` | Nodemailer service, e.g. gmail |
+| `EMAIL_USER` | OTP sender account |
+| `EMAIL_PASSWORD` | Mail app password |
+| `PORT` | Local server port, default 4001 |
+
+`FRONTEND_URL` is present in the example file but the current server reflects
+request origins; it is not an enforced allowlist.
+Never commit filled environment files.
+
+## Verify
 
 ```bash
 cd Social-Media-Application/client
-npm install
-npm start
+npm ci
+npm run build
 ```
 
-Add the required `.env` values in `Social-Media-Application/server` before starting the backend:
+`GET /health` on the API returns 200 when MongoDB is connected and 503 otherwise.
+It exposes connection status only. Full signup, uploads and authenticated flows
+require working MongoDB, Cloudinary and email credentials.
 
-- `MONGO_URI`
-- `JWT_SECRET`
-- `CLOUDINARY_CLOUD_NAME`
-- `CLOUDINARY_API_KEY`
-- `CLOUDINARY_API_SECRET`
+## Vercel
 
----
+There are two existing projects:
 
-## API endpoints
+| Project | Root directory | Purpose |
+|---|---|---|
+| `social-media-application-7gjn` | `Social-Media-Application/client` | React frontend |
+| `social-media-application` | `Social-Media-Application/server` | Express API |
 
-```
-POST /auth/signup     → create account
-POST /auth/login      → get in
-GET  /user/getMyInfo  → who am i
-POST /posts/          → drop a post
-POST /posts/like      → show love
-POST /user/follow     → connect
-```
-
----
-
-## 🤝 connect
-
-made by **prajjawal** 💜
-
-[![GitHub](https://img.shields.io/badge/@Prajjawalsingh87-000?style=flat-square&logo=github)](https://github.com/Prajjawalsingh87)
-
----
-
-<div align="center">
-
-### if you like it, star it ⭐
-
-*no cap, it helps a lot* 🙏
-
-</div>
+Link and deploy from the repository root so Vercel can apply the configured root
+directory: `vercel link --project social-media-application-7gjn`, then
+`vercel deploy` (preview) or `vercel deploy --prod` (production).
+Use the server project name for the API. Keep `REACT_APP_API_URL` pointed at the
+API production URL in the frontend's Vercel environment.

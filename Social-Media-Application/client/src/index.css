@@ -332,3 +332,7 @@ textarea.input {
   border-radius: var(--radius-full);
   border: 2px solid var(--bg-page);
 }
+
+:root { --bg-page:#f6f7fb; --border:#e2e6ef; --radius-md:12px; --radius-lg:20px; --shadow-md:0 12px 36px -24px rgba(23,32,51,.2); }
+.composer-hint { font-size:.75rem; color:var(--text-muted); padding:0 16px 12px; }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
