@@ -45,7 +45,12 @@ app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/user", userRouter);
 app.use("/api", apiRouter);
-app.get("/health", (req, res) => {
+// On Vercel the function is frozen between requests, so a cold instance may still be
+// connecting; give the shared connection attempt a few seconds before answering.
+app.get("/health", async (req, res) => {
+    if (mongoose.connection.readyState !== 1) {
+        await Promise.race([dbConnect(), new Promise((resolve) => setTimeout(resolve, 5000))]);
+    }
     const ready = mongoose.connection.readyState === 1;
     res.status(ready ? 200 : 503).json({ status: ready ? "ok" : "unavailable", database: ready ? "connected" : "disconnected" });
 });
