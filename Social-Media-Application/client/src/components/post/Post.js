@@ -6,8 +6,10 @@ import { useDispatch } from 'react-redux';
 import { likeAndUnlikePost } from "../../redux/slices/postsSlice";
 import { useNavigate } from "react-router";
 import { FiMessageCircle, FiSend } from "react-icons/fi";
+import { renderCaption } from "../../utils/searchText";
 
-function Post({ post }) {
+// highlightTerms: optional search terms to <mark> in the caption (search results).
+function Post({ post, highlightTerms = [] }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     async function handlePostLiked() {
@@ -63,7 +65,7 @@ function Post({ post }) {
                         <button type="button" className="caption-owner" onClick={openOwnerProfile}>
                             {post.owner?.name}
                         </button>
-                        {post.caption}
+                        {renderCaption(post.caption, highlightTerms)}
                     </p>
                 )}
             </div>

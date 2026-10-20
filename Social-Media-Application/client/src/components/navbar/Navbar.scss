@@ -84,7 +84,31 @@
             &::placeholder {
                 color: var(--text-muted);
             }
+
+            &:focus-visible {
+                box-shadow: none;
+            }
+
+            &::-webkit-search-cancel-button {
+                cursor: pointer;
+            }
         }
+
+        .shortcut {
+            flex-shrink: 0;
+            font-family: inherit;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1px 6px;
+        }
+    }
+
+    .icon-btn.mobile-search {
+        display: none;
     }
 
     .actions {
@@ -165,6 +189,10 @@
 
         .profile-btn {
             padding: 4px;
+        }
+
+        .icon-btn.mobile-search {
+            display: grid;
         }
     }
 }

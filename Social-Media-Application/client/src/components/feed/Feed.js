@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import Follower from '../follower/Follower'
 import Post from '../post/Post'
 import Avatar from '../avatar/Avatar'
+import Trending from '../trending/Trending'
 import './Feed.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -91,6 +92,8 @@ function Feed() {
         </main>
 
         <aside className="feed-right">
+          <Trending />
+
           <section className="card side-section">
             <h3 className="section-title">
               Following <span className="count">{followings.length}</span>
