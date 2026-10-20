@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 import dbConnect from "./dbConnect.js";
 import authRouter from "./routers/authRouter.js";
@@ -42,6 +43,10 @@ app.options("*", cors(corsOptions));
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/user", userRouter);
+app.get("/health", (req, res) => {
+    const ready = mongoose.connection.readyState === 1;
+    res.status(ready ? 200 : 503).json({ status: ready ? "ok" : "unavailable", database: ready ? "connected" : "disconnected" });
+});
 app.get("/", (req, res) => {
     res.status(200).send("OK from Server");
 });

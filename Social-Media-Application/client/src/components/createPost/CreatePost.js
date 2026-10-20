@@ -22,7 +22,16 @@ function CreatePost() {
         if (!file) {
             return;
         }
+        if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
+            toast.error("Choose a JPEG, PNG, WebP, or GIF image.");
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error("Choose an image smaller than 5 MB.");
+            return;
+        }
         const fileReader = new FileReader();
+        fileReader.onerror = () => toast.error("Could not read this image. Try another file.");
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
             if (fileReader.readyState === fileReader.DONE) {
@@ -68,6 +77,7 @@ function CreatePost() {
                     className="caption-input"
                     placeholder={`What's on your mind${myProfile?.name ? `, ${myProfile.name.split(" ")[0]}` : ""}?`}
                     rows={2}
+                    maxLength={2200}
                     onChange={(e) => setCaption(e.target.value)}
                     aria-label="Post caption"
                 />
@@ -88,6 +98,7 @@ function CreatePost() {
                 </div>
             )}
 
+            <p className="composer-hint">{caption.length} / 2,200 characters · Images up to 5 MB</p>
             <div className="composer-footer">
                 <label htmlFor="inputImg" className="add-photo">
                     <BsCardImage className="add-photo-icon" />
