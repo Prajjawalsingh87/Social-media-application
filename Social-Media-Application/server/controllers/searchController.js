@@ -1,7 +1,7 @@
-import ta from "time-ago";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { success, error } from "../utils/responseWrapper.js";
+import { timeAgo } from "../utils/Utils.js";
 import { ensureSearchIndexes } from "../utils/searchIndexes.js";
 
 export const MAX_QUERY_LENGTH = 100;
@@ -83,7 +83,7 @@ function mapSearchPost(post, userId) {
         },
         likesCount: likes.length,
         isLiked: likes.some((id) => id.toString() === userId),
-        timeAgo: ta.ago(post.createdAt),
+        timeAgo: timeAgo(post.createdAt),
         createdAt: post.createdAt,
     };
 }

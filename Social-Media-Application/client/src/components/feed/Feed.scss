@@ -208,3 +208,46 @@
         position: static;
     }
 }
+
+/* Infinite scroll */
+.Feed {
+    .feed-sentinel {
+        height: 1px;
+    }
+
+    .feed-more {
+        align-self: center;
+    }
+
+    .feed-end {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 20px 16px 8px;
+        text-align: center;
+
+        .end-icon {
+            font-size: 1.75rem;
+            color: var(--success);
+        }
+
+        p {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        span {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .btn-sm {
+            margin-top: 8px;
+        }
+    }
+}
+
+.Feed .feed-retry {
+    margin-top: 12px;
+}

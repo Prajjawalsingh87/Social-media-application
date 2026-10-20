@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./UpdateProfile.scss";
 import dummyUserImg from "../../assets/user.png";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { updateMyProfile } from "../../redux/slices/appConfigSlice";
 import toast from "react-hot-toast";
+import { MAX_UPLOAD_BYTES, compressImage, readAsDataURL } from "../../utils/imageCompression";
 
 function UpdateProfile() {
     const myProfile = useSelector((state) => state.appConfigReducer.myProfile);
@@ -12,6 +13,8 @@ function UpdateProfile() {
     const [bio, setBio] = useState("");
     const [userImg, setUserImg] = useState("");
     const [saving, setSaving] = useState(false);
+    const [processing, setProcessing] = useState(false);
+    const selectionRef = useRef(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -21,22 +24,36 @@ function UpdateProfile() {
         setUserImg(myProfile?.avatar?.url)
     }, [myProfile]);
 
-    function handleImageChange(e) {
+    async function handleImageChange(e) {
         const file = e.target.files[0];
+        e.target.value = "";
         if (!file) {
             return;
         }
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-            if (fileReader.readyState === fileReader.DONE) {
-                setUserImg(fileReader.result)
+        // Only the latest selection may update the preview (an earlier one can finish later).
+        const selection = ++selectionRef.current;
+        const isLatest = () => selection === selectionRef.current;
+        setProcessing(true);
+        try {
+            // Avatars are shown small: 800 px is plenty.
+            const result = await compressImage(file, { maxEdge: 800 });
+            if (!isLatest()) return;
+            if (result.finalSize > MAX_UPLOAD_BYTES) {
+                toast.error("Choose an image smaller than 5 MB.");
+                return;
             }
+            const dataUrl = await readAsDataURL(result.blob);
+            if (isLatest()) setUserImg(dataUrl);
+        } catch (err) {
+            if (isLatest()) toast.error(err.message || "Could not read this image. Try another file.");
+        } finally {
+            if (isLatest()) setProcessing(false);
         }
     }
 
     function handleSubmit(e) {
         e.preventDefault();
+        if (processing) return; // wait until the new photo is ready
         setSaving(true);
         dispatch(updateMyProfile({
             name,
@@ -114,8 +131,8 @@ function UpdateProfile() {
                         <button type="button" className="btn-ghost" onClick={() => navigate(-1)}>
                             Cancel
                         </button>
-                        <button type="submit" className="btn-primary" disabled={saving}>
-                            {saving ? "Saving..." : "Save changes"}
+                        <button type="submit" className="btn-primary" disabled={saving || processing}>
+                            {saving ? "Saving..." : processing ? "Preparing photo..." : "Save changes"}
                         </button>
                     </div>
                 </form>

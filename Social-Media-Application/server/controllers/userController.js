@@ -3,6 +3,24 @@ import User from "../models/User.js";
 import { success, error } from "../utils/responseWrapper.js";
 import { v2 as cloudinary } from "cloudinary";
 import { mapPostOutput } from "../utils/Utils.js";
+import Notification from "../models/Notification.js";
+import { notify } from "../utils/notify.js";
+import { cursorFilter, pageOf, parseLimit } from "../utils/cursor.js";
+
+const FEED_MAX_LIMIT = 30;
+
+// One page of the home feed (posts by people the user follows), newest first.
+export async function getFeedPage(userId, followingIds, { cursor, limit }) {
+    const filter = { owner: { $in: followingIds } };
+    const older = cursorFilter(cursor);
+    if (older) Object.assign(filter, older);
+    const rows = await Post.find(filter)
+        .sort({ createdAt: -1, _id: -1 })
+        .limit(limit + 1)
+        .populate("owner");
+    const { items, nextCursor } = pageOf(rows, limit);
+    return { posts: items.map((item) => mapPostOutput(item, userId)), nextCursor };
+}
 
 export const followOrUnfollowUserController = async (req, res) => {
     try {
@@ -16,6 +34,7 @@ export const followOrUnfollowUserController = async (req, res) => {
         if (!userToFollow) {
             return res.send(error(404, "User to follow not found"));
         }
+        let isNewFollow = false;
         if (curUser.followings.includes(userIdToFollow)) {
             // already followed
             const followingIndex = curUser.followings.indexOf(userIdToFollow);
@@ -25,9 +44,13 @@ export const followOrUnfollowUserController = async (req, res) => {
         } else {
             userToFollow.followers.push(curUserId);
             curUser.followings.push(userIdToFollow);
+            isNewFollow = true;
         }
         await userToFollow.save();
         await curUser.save();
+        if (isNewFollow) {
+            await notify({ recipient: userToFollow._id, actor: curUserId, type: "follow" });
+        }
         return res.send(success(200, { user: userToFollow }))
     } catch (e) {
         console.log(e);
@@ -39,15 +62,24 @@ export const getPostsOfFollowing = async (req, res) => {
         const curUserId = req._id;
         const curUser = await User.findById(curUserId).populate("followings");
 
-        const fullPosts = await Post.find({
-            owner: {
-                $in: curUser.followings,
-            },
-        }).populate('owner');
+        let posts;
+        let nextCursor = null;
+        if (req.query.limit) {
+            // Paginated (infinite scroll): first page here, later pages via GET /api/feed.
+            const limit = parseLimit(req.query.limit, 10, FEED_MAX_LIMIT);
+            ({ posts, nextCursor } = await getFeedPage(req._id, curUser.followings.map((u) => u._id), { limit }));
+        } else {
+            // Unpaginated (original behaviour): every post, newest first.
+            const fullPosts = await Post.find({
+                owner: {
+                    $in: curUser.followings,
+                },
+            }).populate('owner');
 
-        const posts = fullPosts
-            .map((item) => mapPostOutput(item, req._id))
-            .reverse();
+            posts = fullPosts
+                .map((item) => mapPostOutput(item, req._id))
+                .reverse();
+        }
 
         const followingsIds = curUser.followings.map((item) => item._id);
         followingsIds.push(req._id);
@@ -58,7 +90,7 @@ export const getPostsOfFollowing = async (req, res) => {
             },
         });
 
-        return res.send(success(200, { ...curUser._doc, suggestions, posts }));
+        return res.send(success(200, { ...curUser._doc, suggestions, posts, nextCursor }));
     } catch (e) {
         console.log(e);
         return res.send(error(500, e.message));
@@ -97,46 +129,44 @@ export const getUserPosts = async (req, res) => {
     }
 };
 
+// Deletes the account and only what belongs to it: the user's posts (and their images),
+// the user's likes on other posts, follow links pointing at the user, and notifications
+// the user sent or received (or that point at the deleted posts).
 export const deleteMyProfile = async (req, res) => {
     try {
         const curUserId = req._id;
         const curUser = await User.findById(curUserId);
+        if (!curUser) {
+            return res.send(error(404, "User not found"));
+        }
+        const userObjectId = curUser._id;
 
-        // delete all posts
-        await Post.deleteMany({
-            owner: curUserId,
+        const ownPosts = await Post.find({ owner: userObjectId }).select("_id image").lean();
+        const ownPostIds = ownPosts.map((post) => post._id);
+        const imageIds = ownPosts.map((post) => post.image?.publicId).filter(Boolean);
+        if (curUser.avatar?.publicId) {
+            imageIds.push(curUser.avatar.publicId);
+        }
+
+        await Post.deleteMany({ owner: userObjectId });
+        // $pull only touches documents that actually reference this user.
+        await Post.updateMany({ likes: userObjectId }, { $pull: { likes: userObjectId } });
+        await User.updateMany(
+            { $or: [{ followers: userObjectId }, { followings: userObjectId }] },
+            { $pull: { followers: userObjectId, followings: userObjectId } }
+        );
+        await Notification.deleteMany({
+            $or: [{ recipient: userObjectId }, { actor: userObjectId }, { post: { $in: ownPostIds } }],
         });
+        await User.deleteOne({ _id: userObjectId });
 
-        // removed myself from followers' followings
-        curUser.followers.forEach(async (followerId) => {
-            const follower = await User.findById(followerId);
-            const index = follower.followings.indexOf(curUserId);
-            follower.followings.splice(index, 1);
-            await follower.save();
-        });
-
-        // remove myself from my followings' followers
-        curUser.followings.forEach(async (followingId) => {
-            const following = await User.findById(followingId);
-            const index = following.followers.indexOf(curUserId);
-            following.followers.splice(index, 1);
-            await following.save();
-        });
-
-        // remove myself from all likes
-        const allPosts = await Post.find();
-        allPosts.forEach(async (post) => {
-            const index = post.likes.indexOf(curUserId);
-            post.likes.splice(index, 1);
-            await post.save();
-        });
-
-        // delete user
-        await curUser.remove();
+        // Images last and best effort: a Cloudinary hiccup must not leave a half-deleted account.
+        await Promise.allSettled(imageIds.map((id) => cloudinary.uploader.destroy(id)));
 
         res.clearCookie("jwt", {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         });
 
         return res.send(success(200, "user deleted"));
@@ -206,7 +236,22 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
+// GET /api/feed?cursor=&limit= — the next page of the home feed.
+export const getFeedNextPage = async (req, res) => {
+    try {
+        const curUser = await User.findById(req._id).select("followings").lean();
+        const limit = parseLimit(req.query.limit, 10, FEED_MAX_LIMIT);
+        const page = await getFeedPage(req._id, curUser.followings, { cursor: req.query.cursor, limit });
+        return res.send(success(200, page));
+    } catch (e) {
+        if (e.status === 400) return res.send(error(400, e.message));
+        console.log(e);
+        return res.send(error(500, e.message));
+    }
+};
+
 export default {
+    getFeedNextPage,
     followOrUnfollowUserController,
     getPostsOfFollowing,
     getMyPosts,

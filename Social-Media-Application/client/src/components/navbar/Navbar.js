@@ -4,6 +4,7 @@ import { BsMoonStars, BsSun } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import Avatar from "../avatar/Avatar";
+import NotificationBell from "../notifications/NotificationBell";
 import "./Navbar.scss";
 import { useSelector } from 'react-redux';
 import { KEY_ACCESS_TOKEN, removeItem } from "../../utils/localStorageManager";
@@ -135,7 +136,8 @@ function Navbar() {
                     >
                         <AiOutlineSearch />
                     </button>
-                    <button type="button" className="icon-btn" title="Messages (coming soon)" aria-label="Messages">
+                    <NotificationBell />
+                    <button type="button" className="icon-btn messages-btn" title="Messages (coming soon)" aria-label="Messages">
                         <AiOutlineMessage />
                     </button>
                     <button

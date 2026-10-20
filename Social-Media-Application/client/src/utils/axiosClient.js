@@ -21,7 +21,10 @@ export const axiosClient = axios.create({
 axiosClient.interceptors.request.use((request) => {
     const accessToken = getItem(KEY_ACCESS_TOKEN);
     request.headers["Authorization"] = `Bearer ${accessToken}`;
-    store.dispatch(setLoading(true));
+    // { background: true } requests (polling) don't flash the top loading bar.
+    if (!request.background) {
+        store.dispatch(setLoading(true));
+    }
 
     return request;
 });
@@ -57,7 +60,9 @@ async function retryWithFreshToken(originalRequest, message) {
 }
 
 axiosClient.interceptors.response.use(async (respone) => {
-    store.dispatch(setLoading(false));
+    if (!respone.config?.background) {
+        store.dispatch(setLoading(false));
+    }
     const data = respone.data;
     if (data.status === "ok") {
         return data;
@@ -74,7 +79,9 @@ axiosClient.interceptors.response.use(async (respone) => {
     }
     return Promise.reject(error);
 }, async (error) => {
-    store.dispatch(setLoading(false));
+    if (!error.config?.background) {
+        store.dispatch(setLoading(false));
+    }
     if (axios.isCancel(error)) {
         return Promise.reject(error);
     }

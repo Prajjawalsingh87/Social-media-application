@@ -7,6 +7,7 @@ import Feed from "./components/feed/Feed";
 import Profile from "./components/profile/Profile";
 import UpdateProfile from "./components/updateProfile/UpdateProfile";
 import Search from "./pages/search/Search";
+import Notifications from "./pages/notifications/Notifications";
 import { useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import LoadingBar from "react-top-loading-bar";
@@ -63,6 +64,7 @@ function App() {
                         <Route path="/" element={<Feed />} />
                         <Route path="/profile/:userId" element={<Profile />} />
                         <Route path="/search" element={<Search />} />
+                        <Route path="/notifications" element={<Notifications />} />
                         <Route
                             path="/updateProfile"
                             element={<UpdateProfile />}
