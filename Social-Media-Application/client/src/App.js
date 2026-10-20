@@ -6,6 +6,7 @@ import RequireUser from "./components/RequireUser";
 import Feed from "./components/feed/Feed";
 import Profile from "./components/profile/Profile";
 import UpdateProfile from "./components/updateProfile/UpdateProfile";
+import Search from "./pages/search/Search";
 import { useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import LoadingBar from "react-top-loading-bar";
@@ -61,6 +62,7 @@ function App() {
                     <Route element={<Home />}>
                         <Route path="/" element={<Feed />} />
                         <Route path="/profile/:userId" element={<Profile />} />
+                        <Route path="/search" element={<Search />} />
                         <Route
                             path="/updateProfile"
                             element={<UpdateProfile />}

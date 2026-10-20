@@ -5,6 +5,7 @@ import dbConnect from "./dbConnect.js";
 import authRouter from "./routers/authRouter.js";
 import postsRouter from "./routers/postsRouter.js";
 import userRouter from "./routers/userRouter.js";
+import apiRouter from "./routers/apiRouter.js";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -43,6 +44,7 @@ app.options("*", cors(corsOptions));
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/user", userRouter);
+app.use("/api", apiRouter);
 app.get("/health", (req, res) => {
     const ready = mongoose.connection.readyState === 1;
     res.status(ready ? 200 : 503).json({ status: ready ? "ok" : "unavailable", database: ready ? "connected" : "disconnected" });

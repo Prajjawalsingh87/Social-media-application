@@ -1,0 +1,107 @@
+.Trending {
+    /* Self-contained so the card looks the same in the feed and on the search page. */
+    padding: 12px 14px 4px;
+
+    .section-title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .section-empty {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        padding: 8px 0 12px;
+    }
+
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 6px 0 10px;
+    }
+
+    .tag-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 28px;
+        padding: 0 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.8125rem;
+        font-weight: 600;
+
+        &:hover {
+            text-decoration: none;
+            background: var(--bg-hover);
+        }
+
+        .tag-count {
+            font-size: 0.6875rem;
+            color: var(--text-muted);
+        }
+    }
+
+    .trend-posts {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 8px;
+    }
+
+    .trend-post {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 4px;
+        margin-inline: -4px;
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+            background: var(--bg-hover);
+        }
+
+        img {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            background: var(--bg-subtle);
+        }
+    }
+
+    .trend-text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .trend-caption {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trend-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+
+        .heart {
+            color: var(--like);
+        }
+    }
+}

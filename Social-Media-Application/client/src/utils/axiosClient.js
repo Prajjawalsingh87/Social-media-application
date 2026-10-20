@@ -26,6 +26,36 @@ axiosClient.interceptors.request.use((request) => {
     return request;
 });
 
+// Requests made with { silent: true } show their own error state instead of a toast.
+function toastFailure(config, message) {
+    if (!config?.silent) {
+        store.dispatch(showToast({
+            type: TOAST_FAILURE,
+            message
+        }))
+    }
+}
+
+// The access token expired: get a new one with the refresh cookie and replay the request once.
+async function retryWithFreshToken(originalRequest, message) {
+    originalRequest._retry = true;
+
+    const response = await axios
+        .create({
+            withCredentials: true,
+        })
+        .get(`${baseURL}/auth/refresh`);
+
+    if (response.data.status === "ok") {
+        setItem(KEY_ACCESS_TOKEN, response.data.result.accessToken);
+        return axiosClient(originalRequest);
+    }
+
+    removeItem(KEY_ACCESS_TOKEN);
+    window.location.replace("/login", "_self");
+    return Promise.reject(message);
+}
+
 axiosClient.interceptors.response.use(async (respone) => {
     store.dispatch(setLoading(false));
     const data = respone.data;
@@ -37,40 +67,27 @@ axiosClient.interceptors.response.use(async (respone) => {
     const statusCode = data.statusCode;
     const error = data.message
 
-    store.dispatch(showToast({
-        type: TOAST_FAILURE,
-        message: error
-    }))
+    toastFailure(originalRequest, error);
 
     if (statusCode === 401 && !originalRequest._retry) {
-        // means the access token has expired
-        originalRequest._retry = true;
-
-        const response = await axios
-            .create({
-                withCredentials: true,
-            })
-            .get(`${baseURL}/auth/refresh`);
-
-        if (response.data.status === "ok") {
-            setItem(KEY_ACCESS_TOKEN, response.data.result.accessToken);
-            originalRequest.headers[
-                "Authorization"
-            ] = `Bearer ${response.data.result.accessToken}`;
-
-            return axios(originalRequest);
-        } else {
-            removeItem(KEY_ACCESS_TOKEN);
-            window.location.replace("/login", "_self");
-            return Promise.reject(error);
-        }
+        return retryWithFreshToken(originalRequest, error);
     }
     return Promise.reject(error);
 }, async (error) => {
     store.dispatch(setLoading(false));
-    store.dispatch(showToast({
-        type: TOAST_FAILURE,
-        message: error.message
-    }))
-    return Promise.reject(error);
+    if (axios.isCancel(error)) {
+        return Promise.reject(error);
+    }
+
+    // Routes under /api answer with real HTTP status codes and the usual JSON body.
+    const data = error.response?.data;
+    const message = data?.message || error.message;
+    const originalRequest = error.config;
+
+    if (data?.statusCode === 401 && originalRequest && !originalRequest._retry) {
+        return retryWithFreshToken(originalRequest, message);
+    }
+
+    toastFailure(originalRequest, message);
+    return Promise.reject(message);
 });

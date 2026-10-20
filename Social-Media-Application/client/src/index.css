@@ -336,3 +336,8 @@ textarea.input {
 :root { --bg-page:#f6f7fb; --border:#e2e6ef; --radius-md:12px; --radius-lg:20px; --shadow-md:0 12px 36px -24px rgba(23,32,51,.2); }
 .composer-hint { font-size:.75rem; color:var(--text-muted); padding:0 16px 12px; }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
+
+/* Search highlights + hashtag links */
+mark { background: rgba(250, 204, 21, 0.35); color: inherit; border-radius: 3px; padding: 0 1px; }
+body[data-theme='dark'] mark { background: rgba(250, 204, 21, 0.28); color: #fff7d6; }
+a.hashtag { font-weight: 600; }

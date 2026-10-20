@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ensureSearchIndexes } from "./utils/searchIndexes.js";
 
 // Cached connection variable
 let isConnected = false;
@@ -20,6 +21,8 @@ export default async () => {
 
         isConnected = connect.connections[0].readyState;
         console.log(`MongoDB connected: ${connect.connection.host}`);
+        // Fire and forget: search waits on the same promise if it is still running.
+        ensureSearchIndexes().catch(() => {});
     } catch (error) {
         console.log("MongoDB connection error:", error.message);
         process.exit(1);
