@@ -3,6 +3,8 @@ import User from "../models/User.js";
 import { success, error } from "../utils/responseWrapper.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { mapPostOutput } from '../utils/Utils.js';
+import { notify } from '../utils/notify.js';
+import Notification from "../models/Notification.js";
 
 export const createPostController = async (req, res) => {
     try {
@@ -46,13 +48,18 @@ export const likeAndUnlikePost = async (req, res) => {
             return res.send(error(404, "Post not found"));
         }
 
+        let isNewLike = false;
         if (post.likes.includes(curUserId)) {
             const index = post.likes.indexOf(curUserId);
             post.likes.splice(index, 1);
         } else {
             post.likes.push(curUserId);
+            isNewLike = true;
         }
         await post.save();
+        if (isNewLike) {
+            await notify({ recipient: post.owner._id, actor: curUserId, type: "like", post: post._id });
+        }
         return res.send(success(200, { post: mapPostOutput(post, req._id) }));
 
     } catch (e) {
@@ -104,6 +111,7 @@ export const deletePost = async (req, res) => {
         curUser.posts.splice(index, 1);
         await curUser.save();
         await post.remove();
+        await Notification.deleteMany({ post: post._id });
 
         return res.send(success(200, "post deleted successfully"));
     } catch (e) {

@@ -1,5 +1,11 @@
 import ta from 'time-ago';
 
+// "just now" instead of time-ago's "834 ms ago" / "5 seconds ago".
+export const timeAgo = (date) => {
+    const diff = Date.now() - new Date(date).getTime();
+    return diff < 60 * 1000 ? 'just now' : ta.ago(date);
+};
+
 export const mapPostOutput = (post, userId) => {
     return {
         _id: post._id,
@@ -12,7 +18,7 @@ export const mapPostOutput = (post, userId) => {
         },
         likesCount: post.likes.length,
         isLiked: post.likes.includes(userId),
-        timeAgo: ta.ago(post.createdAt)
+        timeAgo: timeAgo(post.createdAt)
     }
 };
 

@@ -109,3 +109,57 @@
         }
     }
 }
+
+/* Loading placeholder */
+.post-skeleton {
+    .sk {
+        display: block;
+        background: var(--bg-hover);
+        border-radius: var(--radius-sm);
+        animation: post-skeleton-pulse 1.2s ease-in-out infinite;
+    }
+
+    .sk-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .sk-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .sk-lines {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .sk-line {
+        height: 12px;
+        width: 55%;
+
+        &.short {
+            width: 30%;
+        }
+    }
+
+    .sk-media {
+        height: 280px;
+        border-radius: 0;
+    }
+
+    .post-body {
+        padding: 14px;
+    }
+}
+
+@keyframes post-skeleton-pulse {
+    50% {
+        opacity: 0.45;
+    }
+}

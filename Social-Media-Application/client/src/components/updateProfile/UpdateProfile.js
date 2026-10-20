@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { updateMyProfile } from "../../redux/slices/appConfigSlice";
 import toast from "react-hot-toast";
+import { MAX_UPLOAD_BYTES, compressImage, readAsDataURL } from "../../utils/imageCompression";
 
 function UpdateProfile() {
     const myProfile = useSelector((state) => state.appConfigReducer.myProfile);
@@ -21,17 +22,22 @@ function UpdateProfile() {
         setUserImg(myProfile?.avatar?.url)
     }, [myProfile]);
 
-    function handleImageChange(e) {
+    async function handleImageChange(e) {
         const file = e.target.files[0];
+        e.target.value = "";
         if (!file) {
             return;
         }
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-            if (fileReader.readyState === fileReader.DONE) {
-                setUserImg(fileReader.result)
+        try {
+            // Avatars are shown small: 800 px is plenty.
+            const result = await compressImage(file, { maxEdge: 800 });
+            if (result.finalSize > MAX_UPLOAD_BYTES) {
+                toast.error("Choose an image smaller than 5 MB.");
+                return;
             }
+            setUserImg(await readAsDataURL(result.blob));
+        } catch (err) {
+            toast.error(err.message || "Could not read this image. Try another file.");
         }
     }
 

@@ -8,36 +8,53 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from "../../redux/slices/postsSlice";
 import { getFeedData } from "../../redux/slices/feedSlice";
 import toast from "react-hot-toast";
+import {
+    ACCEPTED_IMAGE_TYPES,
+    MAX_UPLOAD_BYTES,
+    compressImage,
+    formatBytes,
+    readAsDataURL,
+} from "../../utils/imageCompression";
 
 function CreatePost() {
     const [postImg, setPostImg] = useState("");
     const [caption, setCaption] = useState('')
     const [posting, setPosting] = useState(false);
+    const [processing, setProcessing] = useState(false);
+    const [imgInfo, setImgInfo] = useState(null);
     const dispatch = useDispatch();
     const myProfile = useSelector(state => state.appConfigReducer.myProfile);
 
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
         const file = e.target.files[0];
         e.target.value = ""; // allow picking the same file again after removing it
         if (!file) {
             return;
         }
-        if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
+        if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
             toast.error("Choose a JPEG, PNG, WebP, or GIF image.");
             return;
         }
-        if (file.size > 5 * 1024 * 1024) {
-            toast.error("Choose an image smaller than 5 MB.");
-            return;
-        }
-        const fileReader = new FileReader();
-        fileReader.onerror = () => toast.error("Could not read this image. Try another file.");
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-            if (fileReader.readyState === fileReader.DONE) {
-                setPostImg(fileReader.result);
+        setProcessing(true);
+        try {
+            const result = await compressImage(file);
+            // The 5 MB limit applies to what is actually uploaded.
+            if (result.finalSize > MAX_UPLOAD_BYTES) {
+                toast.error("Choose an image smaller than 5 MB.");
+                return;
             }
-        };
+            setPostImg(await readAsDataURL(result.blob));
+            setImgInfo(result);
+        } catch (err) {
+            toast.error(err.message || "Could not read this image. Try another file.");
+        } finally {
+            setProcessing(false);
+        }
+    };
+
+    const removeImage = () => {
+        setPostImg("");
+        setImgInfo(null);
     };
 
     const hanldePostSubmit = async () => {
@@ -58,7 +75,7 @@ function CreatePost() {
             ]);
             toast.success("Post published to your feed");
             setCaption('');
-            setPostImg('');
+            removeImage();
         } catch (error) {
             toast.error("Could not publish post");
         } finally {
@@ -66,7 +83,7 @@ function CreatePost() {
         }
     }
 
-    const canPost = caption.trim() && postImg && !posting;
+    const canPost = caption.trim() && postImg && !posting && !processing;
 
     return (
         <div className="CreatePost card">
@@ -89,7 +106,7 @@ function CreatePost() {
                     <button
                         type="button"
                         className="remove-img"
-                        onClick={() => setPostImg("")}
+                        onClick={removeImage}
                         aria-label="Remove image"
                         title="Remove image"
                     >
@@ -98,11 +115,19 @@ function CreatePost() {
                 </div>
             )}
 
-            <p className="composer-hint">{caption.length} / 2,200 characters · Images up to 5 MB</p>
+            {imgInfo && (
+                <p className="composer-hint image-info" data-testid="image-info">
+                    {imgInfo.compressed
+                        ? `Compressed ${formatBytes(imgInfo.originalSize)} → ${formatBytes(imgInfo.finalSize)} · ${imgInfo.width}×${imgInfo.height} ${imgInfo.type === "image/webp" ? "WebP" : "JPEG"}`
+                        : `Original kept · ${formatBytes(imgInfo.finalSize)}`}
+                </p>
+            )}
+            {processing && <p className="composer-hint">Optimizing image…</p>}
+            <p className="composer-hint">{caption.length} / 2,200 characters · Large photos are resized to 1600 px · Up to 5 MB after compression</p>
             <div className="composer-footer">
                 <label htmlFor="inputImg" className="add-photo">
                     <BsCardImage className="add-photo-icon" />
-                    <span>{postImg ? "Change photo" : "Photo"}</span>
+                    <span>{processing ? "Optimizing…" : postImg ? "Change photo" : "Photo"}</span>
                 </label>
                 <input
                     className="inputImg"

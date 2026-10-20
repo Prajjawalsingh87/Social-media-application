@@ -1,7 +1,8 @@
 import User from "../models/User.js";
 import Post from "../models/Post.js";
+import Notification from "../models/Notification.js";
 
-// Full-text indexes that power GET /api/search.
+// Indexes created at startup. Full-text indexes power GET /api/search.
 // A collection can only have one text index, so the specs live here and are
 // created explicitly (createIndex is a no-op when an identical index exists).
 export const USER_TEXT_INDEX = {
@@ -23,6 +24,10 @@ export function ensureSearchIndexes() {
             User.collection.createIndex(USER_TEXT_INDEX.keys, USER_TEXT_INDEX.options),
             Post.collection.createIndex(POST_TEXT_INDEX.keys, POST_TEXT_INDEX.options),
             Post.collection.createIndex({ createdAt: -1 }, { name: "post_created_at" }),
+            // Cursor-paginated home feed: owner in followings, newest first.
+            Post.collection.createIndex({ owner: 1, createdAt: -1, _id: -1 }, { name: "post_owner_created" }),
+            // Notification indexes are declared on the schema (listing, de-dupe, 90-day TTL).
+            Notification.createIndexes().then(() => "notification indexes"),
         ])
             .then((names) => {
                 console.log("Search indexes ready:", names.join(", "));

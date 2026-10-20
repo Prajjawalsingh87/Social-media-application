@@ -13,6 +13,14 @@ import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
+// A stray promise rejection or exception must not take the whole function down.
+process.on("unhandledRejection", (reason) => {
+    console.log("Unhandled rejection:", reason instanceof Error ? reason.message : reason);
+});
+process.on("uncaughtException", (err) => {
+    console.log("Uncaught exception:", err.message);
+});
+
 // Configuration
 cloudinary.config({
     secure: true,
@@ -41,6 +49,19 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
+// Every route below needs MongoDB: wait for the (cached) connection, or answer 503.
+app.use(async (req, res, next) => {
+    if (req.method === "OPTIONS" || req.path === "/" || req.path === "/health") {
+        return next();
+    }
+    try {
+        await dbConnect();
+        return next();
+    } catch (e) {
+        return res.status(503).json({ status: "error", statusCode: 503, message: "Database unavailable, please retry" });
+    }
+});
+
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/user", userRouter);
@@ -49,7 +70,10 @@ app.use("/api", apiRouter);
 // connecting; give the shared connection attempt a few seconds before answering.
 app.get("/health", async (req, res) => {
     if (mongoose.connection.readyState !== 1) {
-        await Promise.race([dbConnect(), new Promise((resolve) => setTimeout(resolve, 5000))]);
+        await Promise.race([
+            dbConnect().catch(() => {}),
+            new Promise((resolve) => setTimeout(resolve, 9000)),
+        ]);
     }
     const ready = mongoose.connection.readyState === 1;
     res.status(ready ? 200 : 503).json({ status: ready ? "ok" : "unavailable", database: ready ? "connected" : "disconnected" });
@@ -60,9 +84,14 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 4001;
 
-dbConnect();
-app.listen(PORT, () => {
-    console.log(`listening on port: ${PORT}`);
-});
+// Start connecting early; requests still await it. Errors are handled per request.
+dbConnect().catch(() => {});
+
+// On Vercel the exported app is the handler; only listen when run directly.
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`listening on port: ${PORT}`);
+    });
+}
 
 export default app;
